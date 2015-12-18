@@ -10,6 +10,7 @@ import v1 from './v1/v1.js';
 const app  = new Koa(),
     port = process.env.WU_PORT || 1337;
 
+
 //Rewrite all request without version to the default version
 app.use(rewrite(/^\/([^v\d].+)/, '/v1/$1'));
 
