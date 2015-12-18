@@ -23,10 +23,13 @@
   },
   "license": "ISC",
   "dependencies": {
+    "jwt-simple": "^0.4.0",
     "koa": "^2.0.0-alpha.3",
     "koa-mount": "git+https://github.com/koajs/mount#next",
-    "koa-router": "^7.0.0",
+    "koa-passport": "^2.0.1",
     "koa-rewrite": "git+https://github.com/koajs/rewrite#2.0.0",
+    "koa-router": "^7.0.0",
+    "mongorito": "^1.4.6",
     "nconf": "^0.8.2"
   },
   "devDependencies": {
