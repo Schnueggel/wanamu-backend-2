@@ -5,7 +5,6 @@ export class Config {
     constructor() {
         nconf.argv();
 
-
         //Config from env with prefix WU_ will overwrite the default conf
         nconf.env({
             separator: '__',
@@ -15,4 +14,4 @@ export class Config {
 }
 
 
-export default config = new Config();
+export default new Config();

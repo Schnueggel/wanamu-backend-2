@@ -3,6 +3,7 @@ module.exports = {
         "modules": true
     },
     "rules": {
+        "no-unused-vars": 0,
         "no-console": 0,
         "indent": [
             2,
