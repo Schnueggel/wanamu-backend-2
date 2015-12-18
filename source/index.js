@@ -14,7 +14,7 @@ const app  = new Koa(),
 app.use(rewrite(/^\/([^v\d].+)/, '/v1/$1'));
 
 //Mount each version as independent app
-app.use(mount(v1()));
+app.use(mount(v1));
 
 app.server = app.listen(port, '0.0.0.0', () => {
     console.info('Koa started at port ' + port);

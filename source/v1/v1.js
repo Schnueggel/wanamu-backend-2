@@ -9,7 +9,7 @@ const app  = new Koa(),
     });
 
 router.get('/test', function (ctx, next) {
-    this.body = 'Successfully reached test route on version 1';
+    ctx.body = 'Successfully reached test route on version 1';
 });
 
 app.use(router.routes())
