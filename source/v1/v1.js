@@ -1,18 +1,14 @@
 'use strict';
 
 import Koa from 'koa';
-import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
+import config from './config/mongo';
+import router from './config/routes';
 
-const app  = new Koa(),
-    router = new Router({
-        prefix: '/v1'
-    });
+const app  = new Koa();
 
-router.get('/test', function (ctx, next) {
-    ctx.body = 'Successfully reached test route on version 1';
-});
-
-app.use(router.routes())
+app.use(bodyParser())
+    .use(router.routes())
     .use(router.allowedMethods());
 
 export default app;
