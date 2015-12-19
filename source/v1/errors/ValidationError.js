@@ -1,7 +1,9 @@
+import BaseError from './BaseError';
+
 /**
  * @class ValidationError
  */
-export default class ValidationError extends Error {
+export default class ValidationError extends BaseError {
     /**
      *
      * @param {string} message
@@ -9,10 +11,6 @@ export default class ValidationError extends Error {
      */
     constructor(message, errors){
         super(message);
-        this.name = this.constructor.name;
-        this.message = message;
-        Error.captureStackTrace(this, this.constructor.name);
-
         this.errors = this.filterErrors(errors);
     }
 
