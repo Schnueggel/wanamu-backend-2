@@ -3,6 +3,7 @@
 import Router from 'koa-router';
 import register from '../controller/Register';
 import auth from '../controller/Auth';
+import authCheck from '../middleware/auth';
 
 const router = new Router({
     prefix: '/v1'
@@ -15,5 +16,6 @@ router.get('/test', function (ctx) {
 router.post('/register', register.register);
 
 router.post('/auth/login', auth.login);
+router.post('/auth/logout', authCheck(), auth.logout);
 
 export default router;

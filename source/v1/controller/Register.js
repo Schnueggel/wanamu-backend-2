@@ -10,7 +10,7 @@ export class Register {
                 error: null,
                 data: null
             };
-
+        
         try {
             result.data = await user.save();
         } catch (err) {

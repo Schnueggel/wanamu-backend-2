@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import errors from '../errors/errors';
 import jwt from 'jwt-simple';
 import config from '../config';
+import bcrypt from 'bcrypt';
+import BluePromise from 'bluebird';
+import { Constants } from '../config/constants';
 
 export class Auth {
 
@@ -46,14 +49,29 @@ export class Auth {
         result.data = user.toJSON();
         delete result.data.password;
 
+        const csrfToken = await new BluePromise((resolve) => {
+            bcrypt.hash(user.email, 1, (err, hash) => {
+                resolve(hash);
+            });
+        });
+
         const payload = {
-            id: user._id,
-            expires: Date.now() + 86400000 // 1 day 86400000 milliseconds
+            id: user.email,
+            expires: Date.now() + 86400000, // 1 day 86400000 milliseconds
+            csrfToken
         };
 
+        ctx.cookies.set(Constants.csrfToken, csrfToken);
+
         result.token = jwt.encode(payload, config.WU_JWT_SECRET);
+        result.token_expires = payload.expires;
 
         ctx.body = result;
+    }
+
+    async logout(ctx) {
+        ctx.status = 200;
+        ctx.cookies.set(Constants.csrfToken, null, {overwrite: true});
     }
 }
 
