@@ -1,7 +1,22 @@
 import mongoose from 'mongoose';
 import config from '../config';
-import bluebird from 'bluebird';
+import BluePromise from 'bluebird';
 
-mongoose.Promise = bluebird;
+mongoose.Promise = BluePromise;
 
-export default mongoose.connect(config.WU_MONGO);
+const mongoUtil = {
+    conn: mongoose.connection,
+    open() {
+        return new BluePromise((resolve) => {
+            mongoose.connect(config.WU_MONGO, resolve);
+        });
+    },
+    drop() {
+        return mongoose.connection.db.dropDatabase();
+    },
+    dropCollection(coll) {
+        return mongoose.connection.db.dropCollection(coll);
+    }
+};
+
+export default mongoUtil;

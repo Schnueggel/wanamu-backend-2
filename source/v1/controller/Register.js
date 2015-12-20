@@ -1,6 +1,6 @@
 import User from '../models/User';
 import mongoose from 'mongoose';
-import ValidationError from '../errors/ValidationError';
+import errors from '../errors/errors';
 
 export class Register {
 
@@ -13,10 +13,12 @@ export class Register {
 
         try {
             result.data = await user.save();
-        } catch(err) {
-            console.log(err.errors);
+        } catch (err) {
             if (err instanceof mongoose.Error.ValidationError) {
-                result.error = new ValidationError(err.message, err.errors);
+                result.error = errors.ValidationError.fromMongooseValidationError(err);
+                ctx.status = 422;
+            } else if (err.code === 11000) {
+                result.error = errors.ValidationError.fromMongoDuplicateError(err);
                 ctx.status = 422;
             } else {
                 result.error = new Error(err.message);

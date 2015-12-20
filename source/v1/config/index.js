@@ -1,21 +1,26 @@
 import nconf from 'nconf';
 
 export class Config {
-
     constructor() {
 
-        this.initConfig();
+        nconf
+            .argv()
+            .env({
+                separator: '__',
+                match: /WU_.+/
+            });
 
-        nconf.argv();
-        //Config from env with prefix WU_ will overwrite the default conf
-        nconf.env({
-            separator: '__',
-            match: /WU_.+/
-        });
+        Object.assign(this, nconf.get());
+
+        this.validateConfig();
     }
 
-    initConfig() {
-        this.WU_MONGO = 'mongodb://localhost:27017/wanamu';
+    validateConfig() {
+        const notFoundEnvs = ['WU_MONGO', 'WU_JWT_SECRET'].filter( env => this[env] === undefined);
+
+        if (notFoundEnvs.length > 0) {
+            throw new Error(`Missing environment vars ${notFoundEnvs.join(',\n')}`);
+        }
     }
 
     get WU_MONGO() {
@@ -24,6 +29,14 @@ export class Config {
 
     set WU_MONGO(value) {
         this._WU_MONGO = value;
+    }
+
+    get WU_JWT_SECRET() {
+        return this._WU_JWT_SECRET;
+    }
+
+    set WU_JWT_SECRET(value) {
+        this._WU_JWT_SECRET = value;
     }
 }
 

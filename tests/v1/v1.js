@@ -1,15 +1,20 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
+import { setUp } from '../../dist/v1/tools/setup';
 import app from '../../dist/v1/v1';
 
 describe ('App Running', function() {
+    let server;
+
     before(function(done) {
-        app.server = app.listen(9999, '127.0.0.1',  done);
+        setUp().then(() => {
+            server = app.listen(9999, '127.0.0.1', done);
+        }).catch(done);
     });
 
     after(function() {
-        app.server.close();
+        server.close();
     });
 
     it('Should run test', function(done){
