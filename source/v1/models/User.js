@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import BluePromise from 'bluebird';
+import { todolistSchema } from './Todolist';
 
 export const Salutations = {
     Mr: 'Mr',
@@ -54,9 +55,9 @@ export const userSchema = new mongoose.Schema({
         trim: true
     },
     friends: [mongoose.Schema.Types.ObjectId],
-    todolists: [mongoose.Schema.Types.ObjectId],
+    todolists: [ todolistSchema ],
     deletedAt: {type: Date}
-});
+}, { timestamps: true });
 
 userSchema.methods = {
     encryptPassword(password){

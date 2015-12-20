@@ -1,6 +1,8 @@
 import User from '../models/User';
+import Todolist from '../models/Todolist';
 import mongoose from 'mongoose';
 import errors from '../errors/errors';
+import { Constants } from '../config/constants';
 
 export class Register {
 
@@ -10,8 +12,9 @@ export class Register {
                 error: null,
                 data: null
             };
-        
+
         try {
+            user.todolists.push(new Todolist({name: Constants.defaultTodolistName }));
             result.data = await user.save();
         } catch (err) {
             if (err instanceof mongoose.Error.ValidationError) {

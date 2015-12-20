@@ -3,6 +3,7 @@ import superagent from 'superagent';
 import expect from 'expect';
 import { setUp } from '../../dist/v1/tools/setup';
 import app from '../../dist/v1/v1';
+import { Constants } from '../../dist/v1/config/constants';
 
 describe('App Register', function () {
     let server;
@@ -26,6 +27,8 @@ describe('App Register', function () {
                 expect(res.body).toBeAn('object');
                 expect(res.body.data).toBeAn('object');
                 expect(res.body.data._id).toBeA('string');
+                expect(res.body.data.todolists).toBeAn('array');
+                expect(res.body.data.todolists[0].name).toEqual(Constants.defaultTodolistName);
                 done();
             });
     });

@@ -1,6 +1,8 @@
 import User from '../models/User';
 import mongo from '../config/mongo';
 import BluePromise from 'bluebird';
+import Todolist from '../models/Todolist';
+import { Constants } from '../config/constants';
 
 export const setUp = async function() {
 
@@ -15,7 +17,8 @@ export const setUp = async function() {
         password: '12345678',
         username: 'huhu',
         saluation: 'Mr',
-        email: 'christian.steinmann.test@gmail.com'
+        email: 'christian.steinmann.test@gmail.com',
+        todolists: [ new Todolist({name: Constants.defaultTodolistName }) ]
     });
 
     await user.save();

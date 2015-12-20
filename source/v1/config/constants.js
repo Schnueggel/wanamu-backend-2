@@ -1,3 +1,4 @@
 export const Constants = {
-    csrfToken: 'csrf-token'
+    csrfToken: 'csrf-token',
+    defaultTodolistName: 'Default'
 };
