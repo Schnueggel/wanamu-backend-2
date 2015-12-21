@@ -6,7 +6,9 @@ import app from '../../dist/v1/v1';
 
 describe('App Todolist', function () {
     let server,
-        id;
+        token,
+        cookies,
+        user;
 
     before(function (done) {
         setUp().then( () => {
@@ -18,16 +20,35 @@ describe('App Todolist', function () {
         server.close();
     });
 
-    it('Should get todolist', function (done) {
-        superagent.get('localhost:9999/v1/todolist/' + id)
+    it('Should not get todos', function (done) {
+        superagent.get('localhost:9999/v1/todolist/0')
             .type('json')
             .end((err, res) => {
-                expect(res).toBeAn('object');
+                expect(res.status).toEqual(401);
+                done();
+            });
+    });
+
+    it('Should login', function (done) {
+        superagent.post('localhost:9999/v1/auth/login')
+            .type('json')
+            .send({username: 'christian.steinmann.test@gmail.com', password: '12345678'})
+            .end((err, res) => {
                 expect(res.status).toEqual(200);
-                expect(res.body).toBeAn('object');
-                expect(res.body.data).toBeAn('object');
-                expect(res.body.data._id).toBeA('string');
-                expect(res.body.name).toEqual('todolist');
+                user = res.body.data[0];
+                token = res.body.token;
+                cookies = [res.headers['set-cookie'][0].match(/(csrf-token=[^;]+); /)[1]];
+                done();
+            });
+    });
+
+    it('Should get todos', function (done) {
+        superagent.get('localhost:9999/v1/todolist/' + user.todolists[0]._id)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {console.log(res.body);
+                expect(res.status).toEqual(200);
                 done();
             });
     });

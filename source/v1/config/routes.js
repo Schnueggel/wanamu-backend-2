@@ -3,6 +3,7 @@
 import Router from 'koa-router';
 import register from '../controller/Register';
 import todolist from '../controller/Todolist';
+import todo from '../controller/todo';
 import auth from '../controller/Auth';
 import authCheck from '../middleware/auth';
 
@@ -17,8 +18,10 @@ router.get('/test', function (ctx) {
 router.post('/register', register.register);
 
 router.post('/auth/login', auth.login);
-router.post('/auth/logout', authCheck(), auth.logout);
+router.post('/auth/logout', authCheck, auth.logout);
 
-router.get('/todolist/:id', authCheck(), todolist.getList);
+router.get('/todolist/:id', authCheck, todolist.getTodos);
+
+router.post('/todo', authCheck, todo.create);
 
 export default router;

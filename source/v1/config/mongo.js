@@ -8,7 +8,9 @@ const mongoUtil = {
     conn: mongoose.connection,
     open() {
         return new BluePromise((resolve) => {
-            mongoose.connect(config.WU_MONGO, resolve);
+            mongoose.connect(config.WU_MONGO, {
+                autoIndex: config.WU_MONGO_AUTOINDEX
+            }, resolve);
         });
     },
     drop() {

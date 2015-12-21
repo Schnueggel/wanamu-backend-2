@@ -5,8 +5,13 @@ export const todolistSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        required: 'Firstname is required'
-    }
+        required: 'Name is required'
+    },
+    defaultList: {
+        type: Boolean,
+        default: false
+    },
+    todos: [mongoose.Schema.Types.ObjectId]
 }, { timestamps: true });
 
 const Model = mongoose.model('Todolist', todolistSchema);

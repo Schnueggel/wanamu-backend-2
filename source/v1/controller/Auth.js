@@ -1,7 +1,7 @@
 import User from '../models/User';
 import Login from '../models/Login';
 import mongoose from 'mongoose';
-import errors from '../errors/errors';
+import errors from '../errors';
 import jwt from 'jwt-simple';
 import config from '../config';
 import bcrypt from 'bcrypt';
@@ -30,15 +30,15 @@ export class Auth {
             return;
         }
 
-
         const user = await User.findOne({
             '$or': [{email: login.username.toLowerCase()}, {username: login.username}]
-        });
+        }).exec();
 
         if (!user) {
             ctx.status = 404;
             return;
         }
+
         const isValid = await user.comparePassword(login.password);
 
         if (!isValid) {
@@ -46,8 +46,8 @@ export class Auth {
             return;
         }
 
-        result.data = user.toJSON();
-        delete result.data.password;
+        result.data = [user.toJSON()];
+        delete result.data[0].password;
 
         const csrfToken = await new BluePromise((resolve) => {
             bcrypt.hash(user.email, 1, (err, hash) => {
@@ -56,7 +56,8 @@ export class Auth {
         });
 
         const payload = {
-            id: user.email,
+            email: user.email,
+            id: user._id,
             expires: Date.now() + 86400000, // 1 day 86400000 milliseconds
             csrfToken
         };

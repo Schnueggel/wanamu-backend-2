@@ -26,14 +26,17 @@ describe('App Auth', function () {
             .type('json')
             .send({username: 'christian.steinmann.test@gmail.com', password: '12345678'})
             .end((err, res) => {
+                const payload = jwt.decode(res.body.token, config.WU_JWT_SECRET);
+
                 expect(res).toBeAn('object');
                 expect(res.status).toEqual(200);
                 expect(res.body).toBeAn('object');
-                expect(res.body.data).toBeAn('object');
-                expect(res.body.data._id).toBeAn('string');
+                expect(res.body.data[0]).toBeAn('object');
+                expect(res.body.data[0]._id).toBeAn('string');
                 expect(res.body.token).toBeAn('string');
-                expect(res.body.password).toEqual(undefined);
-                expect(jwt.decode(res.body.token, config.WU_JWT_SECRET).id).toEqual(res.body.data.email);
+                expect(res.body.data[0].password).toEqual(undefined);
+                expect(payload.email).toEqual(res.body.data[0].email);
+                expect(payload.id).toEqual(res.body.data[0]._id);
                 expect(res.headers['set-cookie']).toBeAn('array');
                 expect(res.headers['set-cookie'][0]).toMatch(/csrf-token.+/);
                 token = res.body.token;

@@ -3,6 +3,8 @@ import nconf from 'nconf';
 export class Config {
     constructor() {
 
+        this.WU_MONGO_AUTOINDEX = true;
+
         nconf
             .argv()
             .env({
@@ -31,6 +33,14 @@ export class Config {
         this._WU_MONGO = value;
     }
 
+    get WU_MONGO_AUTOINDEX() {
+        return this._WU_MONGO_AUTOINDEX;
+    }
+
+    set WU_MONGO_AUTOINDEX(value) {
+        this._WU_MONGO_AUTOINDEX = value;
+    }
+
     get WU_JWT_SECRET() {
         return this._WU_JWT_SECRET;
     }
@@ -38,6 +48,8 @@ export class Config {
     set WU_JWT_SECRET(value) {
         this._WU_JWT_SECRET = value;
     }
+
+
 }
 
 

@@ -1,21 +1,15 @@
-import User from '../models/User';
-import Todolist from '../models/Todolist';
+import Todo from '../models/Todo';
+import errors from '../errors/index';
 import mongoose from 'mongoose';
-import errors from '../errors';
-import { Constants } from '../config/constants';
 
-export class RegisterController {
+export class TodoController {
 
-    async register(ctx) {
-        const user = new User(ctx.request.body),
-            result = {
-                error: null,
-                data: null
-            };
+    async create(ctx) {
+        const result = {},
+            todo = await new Todo(ctx.request.body);
 
         try {
-            user.todolists.push(new Todolist({name: Constants.defaultTodolistName, defaultList: true}));
-            result.data = await user.save();
+            result.data = await todo.save();
         } catch (err) {
             if (err instanceof mongoose.Error.ValidationError) {
                 result.error = errors.ValidationError.fromMongooseValidationError(err);
@@ -33,4 +27,4 @@ export class RegisterController {
     }
 }
 
-export default new RegisterController();
+export default new TodoController();
