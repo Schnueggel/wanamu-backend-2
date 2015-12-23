@@ -1,9 +1,9 @@
 import BaseError from './BaseError';
 
 /**
- * @class NotFoundError
+ * @class AccessDeniedError
  */
-export default class NotFoundError extends BaseError {
+export default class AccessDeniedError extends BaseError {
     /**
      *
      * @param {string} message

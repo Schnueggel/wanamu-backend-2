@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 import BluePromise from 'bluebird';
 
+export const Colors = {
+    color1: 'color1',
+    color2: 'color2',
+    color3: 'color3',
+    color4: 'color4',
+    color5: 'color5'
+};
+
 export const todoSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -13,7 +21,11 @@ export const todoSchema = new mongoose.Schema({
     },
     color: {
         type: String,
-        trim: true
+        enum: {
+            values: Object.keys(Colors),
+            message: 'Invalid color {VALUE}'
+        },
+        default: Colors.color1
     },
     finished: {
         type: Boolean,
@@ -22,13 +34,15 @@ export const todoSchema = new mongoose.Schema({
     parent:  {
         type: mongoose.Schema.Types.ObjectId
     },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId
+    },
     todolistId: {
         type: mongoose.Schema.Types.ObjectId,
         index: true,
         required: 'Todolist id is required'
     },
     shared: [mongoose.Schema.Types.ObjectId],
-    editable: Boolean,
     deletedAt: {
         type: Date
     }

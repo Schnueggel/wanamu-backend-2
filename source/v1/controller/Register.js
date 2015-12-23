@@ -3,11 +3,12 @@ import Todolist from '../models/Todolist';
 import mongoose from 'mongoose';
 import errors from '../errors';
 import { Constants } from '../config/constants';
+import * as _ from 'lodash';
 
 export class RegisterController {
 
     async register(ctx) {
-        const user = new User(ctx.request.body),
+        const user = new User(_.pick(ctx.request.body, ['firstname', 'lastname', 'salutation', 'email', 'password', 'avatar', 'username'])),
             result = {
                 error: null,
                 data: null

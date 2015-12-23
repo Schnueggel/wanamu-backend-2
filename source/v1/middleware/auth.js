@@ -1,5 +1,7 @@
 import {Constants} from '../config/constants';
 import config from '../config';
+import User from '../models/User';
+import errors from '../errors';
 import jwt from 'jwt-simple';
 
 export default async (ctx, next) => {
@@ -70,6 +72,18 @@ export default async (ctx, next) => {
         };
         return;
     }
+
+    const userDoc = await User.findById(payload.id).exec();
+
+    if (!userDoc) {
+        ctx.status = 401;
+        ctx.body = {
+            error: new errors.NotFoundError('User not found')
+        };
+        return;
+    }
+
+    ctx.user = userDoc;
     ctx.jwtPayload = payload;
     ctx.cookies.set(Constants.csrfToken, csrfToken);
 

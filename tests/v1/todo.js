@@ -4,10 +4,11 @@ import expect from 'expect';
 import { setUp } from '../../dist/v1/tools/setup';
 import app from '../../dist/v1/v1';
 
-describe('App Todolist', function () {
+describe('Todo', function () {
     let server,
         token,
         cookies,
+        todo,
         user;
 
     before(function (done) {
@@ -18,15 +19,6 @@ describe('App Todolist', function () {
 
     after(function () {
         server.close();
-    });
-
-    it('Should not get todos', function (done) {
-        superagent.get('localhost:9999/v1/todolist/0')
-            .type('json')
-            .end((err, res) => {
-                expect(res.status).toEqual(401);
-                done();
-            });
     });
 
     it('Should login', function (done) {
@@ -42,8 +34,13 @@ describe('App Todolist', function () {
             });
     });
 
-    it('Should get todos', function (done) {
-        superagent.get('localhost:9999/v1/todolist/' + user.todolists[0]._id)
+    it('Should create todo', function (done) {
+        superagent.post(`localhost:9999/v1/todo/${user.todolists[0]._id}`)
+            .send({
+                title: 'title',
+                description: 'description',
+                color: 'color1'
+            })
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -51,7 +48,26 @@ describe('App Todolist', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].title).toEqual('Test todo');
+                expect(res.body.data[0].title).toEqual('title');
+                expect(res.body.data[0].description).toEqual('description');
+                todo = res.body.data[0];
+                done();
+            });
+    });
+
+    it('Should update todo', function (done) {
+        superagent.put(`localhost:9999/v1/todo/${todo._id}`)
+            .send({title: 'New Title'})
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].title).toEqual('New Title');
+
+                todo = res.body.data[0];
                 done();
             });
     });

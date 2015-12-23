@@ -7,6 +7,7 @@ import { Constants } from '../config/constants';
 
 export const setUp = async function() {
 
+    console.log('Start Db Setup');
     await mongo.open();
     // Wait for indexes. This is important for the first test that runs.
     await User.ensureIndexes();
@@ -30,6 +31,7 @@ export const setUp = async function() {
     const todo = new Todo({
         title: 'Test todo',
         description: 'Test description',
+        owner: userDoc._id,
         todolistId: user.todolists[0]._id
     });
 

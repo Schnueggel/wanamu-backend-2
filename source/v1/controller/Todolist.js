@@ -1,4 +1,3 @@
-import User from '../models/User';
 import Todo from '../models/Todo';
 import errors from '../errors';
 import BluePromise from 'bluebird';
@@ -6,17 +5,9 @@ import BluePromise from 'bluebird';
 export class TodolistController {
 
     async getTodos(ctx) {
-        const result = {},
-            userDoc = await User.findById(ctx.jwtPayload.id).exec();
+        const result = {};
 
-        if (!userDoc) {
-            ctx.status = 404;
-            result.error = new errors.NotFoundError('User not found');
-            ctx.body = result;
-            return;
-        }
-
-        const todolist = userDoc.todolists.id(ctx.params.id);
+        const todolist = ctx.user.todolists.id(ctx.params.id);
 
         if (!todolist) {
             ctx.status = 404;
