@@ -24,5 +24,7 @@ router.get('/todolist/:id', authCheck, todolist.getTodos);
 
 router.post('/todo/:id', authCheck, todo.createTodo);
 router.put('/todo/:id', authCheck, todo.updateTodo);
+router.delete('/todo/:id', authCheck, todo.deleteTodo);
+router.get('/todo/:id', authCheck, todo.getTodo);
 
 export default router;

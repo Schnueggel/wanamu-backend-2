@@ -16,28 +16,34 @@ export class TodoController {
     async updateTodo(ctx) {
         const result = {};
 
-        const todo = await Todo.findById(ctx.params.id);
+        const todoDoc = await Todo.findById(ctx.params.id);
 
-        if (!todo) {
+        if (!todoDoc) {
             ctx.status = 404;
             result.error = new errors.NotFoundError('Todo not found');
             ctx.body = result;
             return;
         }
 
-        if (!todo.owner.equals(ctx.user._id)) {
+        if (!todoDoc.owner.equals(ctx.user._id)) {
             ctx.status = 403;
             result.error = new errors.AccessDeniedError('Not enough rights to edit this user');
             ctx.body = result;
             return;
         }
 
-        Object.assign(todo, _.pick(ctx.request.body, ['title', 'description', 'color', 'finished', 'shared']));
+        const finished = todoDoc.finished;
+
+        Object.assign(todoDoc, _.pick(ctx.request.body, ['title', 'description', 'color', 'finished']));
 
         try {
-            const newTodo = await todo.save();
+            const newTodoDoc = await todoDoc.save(),
+                changed = finished !== newTodoDoc.finished;
 
-            result.data = [newTodo.toJSON()];
+            if (todoDoc.finished && todoDoc.parent) {
+                //TODO update notification and finished count
+            }
+            result.data = [newTodoDoc.toJSON()];
         } catch(err) {
             if (err instanceof mongoose.Error.ValidationError) {
                 result.error = errors.ValidationError.fromMongooseValidationError(err);
@@ -68,7 +74,7 @@ export class TodoController {
         }
 
         try {
-            const data = _.pick(ctx.request.body, ['title', 'description', 'color', 'finished', 'shared']);
+            const data = _.pick(ctx.request.body, ['title', 'description', 'color', 'finished']);
             data.owner = ctx.user._id;
             data.todolistId = ctx.params.id;
 
@@ -84,6 +90,42 @@ export class TodoController {
                 ctx.status = 500;
             }
         }
+
+        ctx.body = result;
+    }
+
+    async deleteTodo(ctx) {
+        const result = {};
+
+        const todoDoc = await Todo.findOneAndRemove({
+            _id: ctx.params.id,
+            owner: ctx.user._id
+        }).exec();
+
+        if (!todoDoc) {
+            ctx.status = 404;
+            return;
+        }
+
+        result.data = [todoDoc];
+
+        ctx.body = result;
+    }
+
+    async getTodo(ctx) {
+        const result = {};
+
+        const todoDoc = await Todo.findOne({
+            _id: ctx.params.id,
+            owner: ctx.user._id
+        }).exec();
+
+        if (!todoDoc) {
+            ctx.status = 404;
+            return;
+        }
+
+        result.data = [todoDoc];
 
         ctx.body = result;
     }

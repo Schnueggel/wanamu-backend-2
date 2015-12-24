@@ -37,6 +37,10 @@ export const todoSchema = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId
     },
+    accepted: {
+        type: Boolean,
+        default: false
+    },
     todolistId: {
         type: mongoose.Schema.Types.ObjectId,
         index: true,
