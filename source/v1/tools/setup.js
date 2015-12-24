@@ -14,34 +14,73 @@ export const setUp = async function() {
     await Todo.ensureIndexes();
     await mongo.drop();
 
-    const user = new User({
-        firstname: 'Dog',
-        lastname: 'Cat',
+    const data = {};
+
+    // User 1
+
+    const user1 = new User({
+        firstname: 'Dog1',
+        lastname: 'Cat1',
         password: '12345678',
-        username: 'huhu',
+        username: 'user1',
         saluation: 'Mr',
         email: 'christian.steinmann.test@gmail.com',
         todolists: [ new Todolist({name: Constants.defaultTodolistName, defaultList: true}) ]
     });
 
-    const userDoc = await user.save();
-    // Wait for indexes to be created because this user is the first after drop
+    data.userDoc1 = await user1.save();
+
+    // User 2
+
+    const user2 = new User({
+        firstname: 'Dog2',
+        lastname: 'Cat2',
+        password: '12345678',
+        username: 'user2',
+        saluation: 'Mr',
+        email: 'christian.steinmann.test2@gmail.com',
+        todolists: [ new Todolist({name: Constants.defaultTodolistName, defaultList: true}) ]
+    });
+
+    data.userDoc2 = await user2.save();
+
+    // User 3
+
+    const user3 = new User({
+        firstname: 'Dog3',
+        lastname: 'Cat3',
+        password: '12345678',
+        username: 'user3',
+        saluation: 'Mr',
+        email: 'christian.steinmann.test3@gmail.com',
+        todolists: [ new Todolist({name: Constants.defaultTodolistName, defaultList: true}) ]
+    });
+
+    data.userDoc3 = await user3.save();
+
+    await User.update({_id: data.userDoc1._id}, { $addToSet: {
+        friends: [data.userDoc2._id]
+    }});
+
+    // Wait for indexes to be created because this users are the first ones after drop
     await User.ensureIndexes();
 
     const todo = new Todo({
         title: 'Test todo',
         description: 'Test description',
-        owner: userDoc._id,
-        todolistId: user.todolists[0]._id
+        owner: data.userDoc1._id,
+        todolistId: data.userDoc1.todolists[0]._id
     });
 
     const todoDoc = await todo.save();
 
     await Todo.ensureIndexes();
 
-    await User.update({_id: userDoc._id, 'todolists._id': userDoc.todolists[0]._id}, {
+    await User.update({_id: data.userDoc1._id, 'todolists._id': data.userDoc1.todolists[0]._id}, {
         $addToSet: {
             'todolists.$.todos': todoDoc._id
         }
     });
+
+    return await BluePromise.resolve(data);
 };

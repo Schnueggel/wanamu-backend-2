@@ -5,6 +5,7 @@ import register from '../controller/Register';
 import todolist from '../controller/Todolist';
 import todo from '../controller/todo';
 import auth from '../controller/Auth';
+import user from '../controller/User';
 import authCheck from '../middleware/auth';
 
 const router = new Router({
@@ -26,5 +27,11 @@ router.post('/todo/:id', authCheck, todo.createTodo);
 router.put('/todo/:id', authCheck, todo.updateTodo);
 router.delete('/todo/:id', authCheck, todo.deleteTodo);
 router.get('/todo/:id', authCheck, todo.getTodo);
+
+router.delete('/user/:id', authCheck, user.deleteUser);
+router.get('/user/:id', authCheck, user.getUser);
+
+router.put('/user/:id/friends', authCheck, user.addFriends);
+router.get('/user/:id/friends', authCheck, user.getFriends);
 
 export default router;

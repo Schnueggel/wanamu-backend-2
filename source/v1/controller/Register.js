@@ -13,7 +13,6 @@ export class RegisterController {
                 error: null,
                 data: null
             };
-
         try {
             user.todolists.push(new Todolist({name: Constants.defaultTodolistName, defaultList: true}));
             result.data = await user.save();

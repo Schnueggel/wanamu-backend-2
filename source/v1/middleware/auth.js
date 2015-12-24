@@ -73,7 +73,7 @@ export default async (ctx, next) => {
         return;
     }
 
-    const userDoc = await User.findById(payload.id).exec();
+    const userDoc = await User.findById(payload.id, {password:0}).exec();
 
     if (!userDoc) {
         ctx.status = 401;

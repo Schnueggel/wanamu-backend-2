@@ -33,6 +33,7 @@ export const userSchema = new mongoose.Schema({
         index: {unique: true},
         unique: true,
         trim: true,
+        match: [/[a-zA-Z_-]+/, 'Username can only contain letters, numbers, _ and -'],
         required: 'A username is required'
     },
     email: {
@@ -46,6 +47,10 @@ export const userSchema = new mongoose.Schema({
             'Invalid Email'
         ]
     },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     password: {
         type: String,
         minlength: [8, 'Invalid Password']
@@ -55,8 +60,7 @@ export const userSchema = new mongoose.Schema({
         trim: true
     },
     friends: [mongoose.Schema.Types.ObjectId],
-    todolists: [ todolistSchema ],
-    deletedAt: {type: Date}
+    todolists: [ todolistSchema ]
 }, { timestamps: true });
 
 userSchema.methods = {

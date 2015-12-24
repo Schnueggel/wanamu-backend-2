@@ -46,10 +46,7 @@ export const todoSchema = new mongoose.Schema({
         index: true,
         required: 'Todolist id is required'
     },
-    shared: [mongoose.Schema.Types.ObjectId],
-    deletedAt: {
-        type: Date
-    }
+    shared: [mongoose.Schema.Types.ObjectId]
 }, { timestamps: true });
 
 const Model = mongoose.model('Todo', todoSchema);
