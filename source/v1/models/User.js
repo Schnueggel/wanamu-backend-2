@@ -59,7 +59,11 @@ export const userSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    friends: [mongoose.Schema.Types.ObjectId],
+    ingoreList: [mongoose.Schema.Types.ObjectId],
+    friends: {
+        type: [mongoose.Schema.Types.ObjectId],
+        index: true
+    },
     todolists: [ todolistSchema ]
 }, { timestamps: true });
 

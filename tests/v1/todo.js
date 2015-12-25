@@ -86,6 +86,20 @@ describe('Todo', function () {
             });
     });
 
+    it('Should share todo', function (done) {
+        superagent.get(`localhost:9999/v1/todo/${todo._id}`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].title).toEqual('New Title');
+                done();
+            });
+    });
+
     it('Should delete todo', function (done) {
         superagent.delete(`localhost:9999/v1/todo/${todo._id}`)
             .set('Cookie', cookies)
