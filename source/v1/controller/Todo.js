@@ -1,5 +1,6 @@
 import User from '../models/User';
 import Todo from '../models/Todo';
+import Todolist from '../models/Todolist';
 import errors from '../errors';
 import mongoose from 'mongoose';
 import BluePromise from 'bluebird';
@@ -66,7 +67,9 @@ export class TodoController {
     async createTodo(ctx) {
         const result = {};
 
-        if(!ctx.user.todolists.id(ctx.params.id)) {
+        const todolist = await Todolist.findById(ctx.params.id).exec();
+
+        if(!todolist) {
             ctx.status = 404;
             result.error = new errors.NotFoundError('Todolist not found');
             ctx.body = result;
@@ -77,7 +80,6 @@ export class TodoController {
             const data = _.pick(ctx.request.body, ['title', 'description', 'color', 'finished']);
             data.owner = ctx.user._id;
             data.todolistId = ctx.params.id;
-
             const todoDoc = await Todo.create(data);
 
             result.data = [todoDoc.toJSON()];
@@ -179,6 +181,13 @@ export class TodoController {
             return;
         }
 
+        if (todoDoc.finished) {
+            ctx.status = 422;
+            result.error = new errors.RequestDataError('Cannot share finished todo');
+            ctx.body = result;
+            return;
+        }
+
         if (!todoDoc.owner.equals(ctx.user._id) && !ctx.user.isAdmin) {
             ctx.status = 403;
             result.error = new errors.AccessDeniedError('Not enough rights to share this todo');
@@ -190,6 +199,7 @@ export class TodoController {
 
         share = share.filter(v => mongoose.Types.ObjectId.isValid(v));
 
+        share.pull(todoDoc.owner);
 
         if( _.isEmpty(ctx.request.body.share) === false) {
             ctx.status = 422;
@@ -198,26 +208,43 @@ export class TodoController {
             return;
         }
 
-        const ownerDoc = await User.findById(todoDoc.owner).exec();
+        const userForShare = await User.find({
+            _id: {
+                $in: share
+            },
+            ingorelist: {
+                $nin: share
+            }
+        }).exec();
 
-
-        const allowedToShare = ctx.request.body.share.filter((v) => {
-            return ctx.user.shared.indexOf(v) > -1;
-        });
-
-        console.log(allowedToShare);
-
-        if (!todoDoc) {
+        if (!userForShare) {
             ctx.status = 404;
-            return;
-        }
-
-        if (!todoDoc.owner.equals(ctx.user._id)) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to read this todo');
+            result.error = new errors.NotFoundError('No valid user for sharing');
             ctx.body = result;
             return;
         }
+
+        const todoDocJson = todoDoc.toJSON();
+
+        todoDocJson.parent = todoDoc._id;
+        delete todoDocJson._id;
+        todoDocJson.shared = [];
+
+        const todos = userForShare.map(v => {
+            const id = v.todolists.find( todolist => todolist.defaultList).id;
+            todoDocJson.todolistId = id;
+            return todoDocJson;
+        });
+
+        const todoDocs = await new BluePromise((resolve) => {
+            Todo.collection.insert(todos, (err, doc) => {
+                if (err) {
+                    resolve(err);
+                } else {
+                    resolve(doc);
+                }
+            });
+        });
     }
 }
 

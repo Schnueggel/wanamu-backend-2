@@ -3,6 +3,7 @@ import Todo from '../models/Todo';
 import mongo from '../config/mongo';
 import BluePromise from 'bluebird';
 import Todolist from '../models/Todolist';
+import userService from '../services/user';
 import { Constants } from '../config/constants';
 
 export const setUp = async function() {
@@ -16,39 +17,29 @@ export const setUp = async function() {
 
     const data = {};
 
-    // User 1
-
-    const user1 = new User({
+    data.userDoc1 = await userService.createUser({
         firstname: 'Dog1',
         lastname: 'Cat1',
         password: '12345678',
         username: 'user1',
         salutation: 'Mr',
         avatar: 'http://www.my.avatar.url',
-        email: 'christian.steinmann.test@gmail.com',
-        todolists: [ new Todolist({name: Constants.defaultTodolistName, defaultList: true}) ]
+        email: 'christian.steinmann.test@gmail.com'
     });
 
-    data.userDoc1 = await user1.save();
-
     // User 2
-
-    const user2 = new User({
+    data.userDoc2 = await userService.createUser({
         firstname: 'Dog2',
         lastname: 'Cat2',
         password: '12345678',
         username: 'user2',
         salutation: 'Mr',
         avatar: 'http://www.my.avatar.url',
-        email: 'christian.steinmann.test2@gmail.com',
-        todolists: [ new Todolist({name: Constants.defaultTodolistName, defaultList: true}) ]
+        email: 'christian.steinmann.test2@gmail.com'
     });
 
-    data.userDoc2 = await user2.save();
-
     // User 3
-
-    const user3 = new User({
+    data.userDoc3 = await userService.createUser({
         firstname: 'Dog3',
         lastname: 'Cat3',
         password: '12345678',
@@ -56,11 +47,8 @@ export const setUp = async function() {
         salutation: 'Mr',
         isAdmin: true,
         avatar: 'http://www.my.avatar.url',
-        email: 'christian.steinmann.test3@gmail.com',
-        todolists: [ new Todolist({name: Constants.defaultTodolistName, defaultList: true}) ]
+        email: 'christian.steinmann.test3@gmail.com'
     });
-
-    data.userDoc3 = await user3.save();
 
     data.userDoc1 = await User.findByIdAndUpdate(data.userDoc1._id, { $addToSet: {
         friends: data.userDoc2._id
@@ -73,18 +61,16 @@ export const setUp = async function() {
     // Wait for indexes to be created because this users are the first ones after drop
     await User.ensureIndexes();
 
-    const todo = new Todo({
+    const todoDoc = await Todo.create({
         title: 'Test todo',
         description: 'Test description',
         owner: data.userDoc1._id,
-        todolistId: data.userDoc1.todolists[0]._id
+        todolistId: data.userDoc1.defaultTodolistId
     });
-
-    const todoDoc = await todo.save();
 
     await Todo.ensureIndexes();
 
-    await User.update({_id: data.userDoc1._id, 'todolists._id': data.userDoc1.todolists[0]._id}, {
+    await User.update({_id: data.userDoc1._id, 'todolists._id': data.userDoc1.defaultTodolistId}, {
         $addToSet: {
             'todolists.$.todos': todoDoc._id
         }

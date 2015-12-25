@@ -7,9 +7,8 @@ export const todolistSchema = new mongoose.Schema({
         trim: true,
         required: 'Name is required'
     },
-    defaultList: {
-        type: Boolean,
-        default: false
+    owner: {
+        type: mongoose.Schema.Types.ObjectId
     },
     todos: [mongoose.Schema.Types.ObjectId]
 }, { timestamps: true });

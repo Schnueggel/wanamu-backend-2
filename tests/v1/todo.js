@@ -35,7 +35,7 @@ describe('Todo', function () {
     });
 
     it('Should create todo', function (done) {
-        superagent.post(`localhost:9999/v1/todo/${user.todolists[0]._id}`)
+        superagent.post(`localhost:9999/v1/todo/${user.defaultTodolistId}`)
             .send({
                 title: 'title',
                 description: 'description',

@@ -43,7 +43,7 @@ describe('App Todolist', function () {
     });
 
     it('Should get todos', function (done) {
-        superagent.get('localhost:9999/v1/todolist/' + user.todolists[0]._id)
+        superagent.get('localhost:9999/v1/todolist/' + user.defaultTodolistId)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')

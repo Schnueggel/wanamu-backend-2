@@ -59,12 +59,17 @@ export const userSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    ignorelist: [mongoose.Schema.Types.ObjectId],
+    ignorelist: {
+        type: [],
+        index: true
+    },
     friends: {
         type: [mongoose.Schema.Types.ObjectId],
         index: true
     },
-    todolists: [ todolistSchema ]
+    defaultTodolistId: {
+        type: mongoose.Schema.Types.ObjectId
+    }
 }, { timestamps: true });
 
 userSchema.methods = {

@@ -4,6 +4,7 @@ import expect from 'expect';
 import { setUp } from '../../dist/v1/tools/setup';
 import app from '../../dist/v1/v1';
 import { Constants } from '../../dist/v1/config/constants';
+import mongoose from 'mongoose';
 
 describe('App Register', function () {
     let server;
@@ -21,14 +22,13 @@ describe('App Register', function () {
         superagent.post('localhost:9999/v1/register')
             .type('json')
             .send({firstname:'test', lastname: 'lastname', username: 'testuser', password: 'abcdefghijk', email: 'testemail@email.de', salutation: 'Mr'})
-            .end((err, res) => {
+            .end((err, res) => {console.log(res.body.data[0].defaultTodolistId);
                 expect(res).toBeAn('object');
                 expect(res.status).toEqual(200);
                 expect(res.body).toBeAn('object');
-                expect(res.body.data).toBeAn('object');
-                expect(res.body.data._id).toBeA('string');
-                expect(res.body.data.todolists).toBeAn('array');
-                expect(res.body.data.todolists[0].name).toEqual(Constants.defaultTodolistName);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data[0]._id).toBeA('string');
+                expect(mongoose.Types.ObjectId.isValid(res.body.data[0].defaultTodolistId)).toBe(true);
                 done();
             });
     });

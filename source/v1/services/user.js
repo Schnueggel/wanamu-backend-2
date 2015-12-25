@@ -1,4 +1,6 @@
 import User from '../models/User';
+import Todolist from '../models/Todolist';
+import {Constants} from '../config/constants';
 
 export class UserService {
 
@@ -38,6 +40,22 @@ export class UserService {
         }, '_id username avatar').exec();
 
         return result;
+    }
+
+    /**
+     *
+     * @param data
+     * @returns {*}
+     */
+    async createUser(data){
+        let userDoc = await User.create(data);
+        const todolist = await Todolist.create({name: Constants.defaultTodolistName, owner: userDoc._id});
+
+        userDoc = await User.findByIdAndUpdate(userDoc._id, {
+            defaultTodolistId: todolist._id
+        }, {new:true});
+
+        return userDoc;
     }
 }
 
