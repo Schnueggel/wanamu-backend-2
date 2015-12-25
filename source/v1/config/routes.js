@@ -36,7 +36,7 @@ router.post('/todo/:id', authCheck, todo.createTodo);
 router.put('/todo/:id', authCheck, todo.updateTodo);
 router.delete('/todo/:id', authCheck, todo.deleteTodo);
 router.get('/todo/:id', authCheck, todo.getTodo);
-router.get('/todo/:id/share', authCheck, todo.shareTodo);
+router.post('/todo/:id/share', authCheck, todo.shareTodo);
 
 router.delete('/user/:id', authCheck, checkUserIdMw,  user.deleteUser);
 router.delete('/user', authCheck, checkUserIdMw,  user.deleteUser);

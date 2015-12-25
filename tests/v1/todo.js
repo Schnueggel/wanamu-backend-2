@@ -6,13 +6,15 @@ import app from '../../dist/v1/v1';
 
 describe('Todo', function () {
     let server,
-        token,
-        cookies,
+        token, token2,
+        cookies, cookies2,
         todo,
-        user;
+        dbData,
+        user, user2;
 
     before(function (done) {
-        setUp().then( () => {
+        setUp().then( (data) => {
+            dbData = data;
             server = app.listen(9999, '127.0.0.1', done);
         }).catch(done);
     });
@@ -51,6 +53,51 @@ describe('Todo', function () {
                 expect(res.body.data[0].title).toEqual('title');
                 expect(res.body.data[0].description).toEqual('description');
                 todo = res.body.data[0];
+                done(err);
+            });
+    });
+
+    it('Should have shared todo', function (done) {
+        superagent.post(`localhost:9999/v1/todo/${todo._id}/share`)
+            .send({
+                share: [dbData.userDoc2._id]
+            })
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                done(err);
+            });
+    });
+
+
+    it('Should login user 2', function (done) {
+        superagent.post('localhost:9999/v1/auth/login')
+            .type('json')
+            .send({username: 'user2', password: '12345678'})
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                user2 = res.body.data[0];
+                token2 = res.body.token;
+                cookies2 = [res.headers['set-cookie'][0].match(/(csrf-token=[^;]+); /)[1]];
+                done();
+            });
+    });
+
+    it('Should get new todo', function (done) {
+        superagent.get('localhost:9999/v1/todolist/' + user2.defaultTodolistId)
+            .set('Cookie', cookies2)
+            .set('Authorization', `Bearer ${token2}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].owner).toEqual(user._id.toString());
+                expect(res.body.data[0].parent).toEqual(todo._id.toString());
                 done();
             });
     });

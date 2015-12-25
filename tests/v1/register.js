@@ -22,7 +22,7 @@ describe('App Register', function () {
         superagent.post('localhost:9999/v1/register')
             .type('json')
             .send({firstname:'test', lastname: 'lastname', username: 'testuser', password: 'abcdefghijk', email: 'testemail@email.de', salutation: 'Mr'})
-            .end((err, res) => {console.log(res.body.data[0].defaultTodolistId);
+            .end((err, res) => {
                 expect(res).toBeAn('object');
                 expect(res.status).toEqual(200);
                 expect(res.body).toBeAn('object');

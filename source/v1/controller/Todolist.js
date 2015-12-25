@@ -33,6 +33,13 @@ export class TodolistController {
             return;
         }
 
+        if (!todolistDoc.owner.equals(ctx.user._id) && !ctx.user.isAdmin) {
+            ctx.status = 403;
+            result.error = new errors.AccessDeniedError('Not enough rights to query this todolist');
+            ctx.body = result;
+            return;
+        }
+
         result.data = await Todo.find({
             todolistId: todolistDoc._id
         }).exec();

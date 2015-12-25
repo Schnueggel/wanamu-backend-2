@@ -199,9 +199,13 @@ export class TodoController {
 
         share = share.filter(v => mongoose.Types.ObjectId.isValid(v));
 
-        share.pull(todoDoc.owner);
+        const index = share.indexOf(todoDoc.owner);
 
-        if( _.isEmpty(ctx.request.body.share) === false) {
+        if (index > -1) {
+            share = share.splice(index, 1);
+        }
+
+        if( _.isEmpty(share)) {
             ctx.status = 422;
             result.error = new errors.RequestDataError('Field share must be of type array');
             ctx.body = result;
@@ -214,6 +218,9 @@ export class TodoController {
             },
             ingorelist: {
                 $nin: share
+            },
+            friends: {
+                $in: [ctx.user._id]
             }
         }).exec();
 
@@ -228,11 +235,11 @@ export class TodoController {
 
         todoDocJson.parent = todoDoc._id;
         delete todoDocJson._id;
-        todoDocJson.shared = [];
 
-        const todos = userForShare.map(v => {
-            const id = v.todolists.find( todolist => todolist.defaultList).id;
-            todoDocJson.todolistId = id;
+
+        const todos = userForShare.map(user => {
+            todoDocJson.todolistId = user.defaultTodolistId;
+
             return todoDocJson;
         });
 
@@ -245,6 +252,18 @@ export class TodoController {
                 }
             });
         });
+
+        if (todoDocs instanceof Error) {
+            ctx.status = 500;
+            console.error(todoDocs);
+            result.error = new Error('Unable to create shared todos');
+            ctx.body = result;
+            return;
+        }
+
+        result.data = todoDocs.insertedIds;
+
+        ctx.body = result;
     }
 }
 
