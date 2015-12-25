@@ -59,7 +59,7 @@ export const userSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    ingoreList: [mongoose.Schema.Types.ObjectId],
+    ignorelist: [mongoose.Schema.Types.ObjectId],
     friends: {
         type: [mongoose.Schema.Types.ObjectId],
         index: true

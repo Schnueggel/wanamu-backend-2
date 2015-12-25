@@ -13,14 +13,7 @@ export class UserController {
     async deleteUser(ctx) {
         const result = {};
 
-        if (!ctx.user._id.equals(ctx.params.id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to delete this user');
-            ctx.body = result;
-            return;
-        }
-
-        const userDoc = await User.findById(ctx.params.id, {password: 0}).exec();
+        const userDoc = await User.findByIdAndRemove(ctx.params.id, {select: {password: 0}}).exec();
 
         if (!userDoc) {
             ctx.status = 404;
@@ -29,15 +22,7 @@ export class UserController {
             return;
         }
 
-        try {
-            const removed = await userDoc.remove();
-            if (!removed) {
-                ctx.status = 404;
-            }
-        } catch (err) {
-            result.error = new Error(err.message);
-            ctx.status = 500;
-        }
+        result.data = [userDoc];
 
         ctx.body = result;
     }
@@ -51,13 +36,6 @@ export class UserController {
     async getUser(ctx) {
         const result = {};
 
-        if (!ctx.user._id.equals(ctx.params.id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to get this user');
-            ctx.body = result;
-            return;
-        }
-
         const userDoc = await User.findById(ctx.params.id, {password: 0}).exec();
 
         if (!userDoc) {
@@ -68,6 +46,45 @@ export class UserController {
         }
 
         result.data = [userDoc];
+
+        ctx.body = result;
+    }
+
+    /**
+     * request.params: {
+     *    id: <userId>
+     * }
+     * request.body: {
+     *    id: <userId>
+     * }
+     * @param ctx
+     */
+    async ignoreUser(ctx) {
+        const result = {};
+
+        const userDoc = await User.findByIdAndUpdate(ctx.params.id, {
+            $addToSet: {
+                ignorelist: ctx.request.body.id
+            },
+            $pull: {
+                friends: ctx.request.body.id
+            }
+        }, {new: true}).exec();
+
+        const updatedFriend = await User.update({
+            _id: ctx.request.body.id
+        },{
+            $pull: {
+                friends: ctx.params.id
+            }
+        });
+
+        if (!userDoc || userDoc.ignorelist.indexOf(ctx.request.body.id) === -1) {
+            ctx.status = 404;
+            result.error = new errors.NotFoundError('User not found');
+        } else {
+            //TODO notification
+        }
 
         ctx.body = result;
     }

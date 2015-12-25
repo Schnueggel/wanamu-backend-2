@@ -19,24 +19,6 @@ export class FriendController {
         const result = {},
             fid = ctx.request.body.fid;
 
-        if (!ctx.params.id) {
-            ctx.params.id = ctx.user._id;
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(fid)) {
-            ctx.status = 400;
-            result.error = new errors.RequestDataError('Invalid parameter friend id');
-            ctx.body = result;
-            return;
-        }
-
-        if (!ctx.user._id.equals(ctx.params.id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to add friends to this user');
-            ctx.body = result;
-            return;
-        }
-
         if (ctx.user._id.equals(fid)) {
             ctx.status = 403;
             result.error = new errors.AccessDeniedError('You are not allowed to make friends with yourself');
@@ -49,7 +31,7 @@ export class FriendController {
         if (ctx.user._id.equals(ctx.params.id)) {
             userDoc = ctx.user;
         } else {
-            userDoc = await User.findById(ctx.params.id, {password: 0}).exec();
+            userDoc = await User.findById(ctx.params.id).exec();
         }
 
         if (!userDoc) {
@@ -61,7 +43,7 @@ export class FriendController {
 
         const friendDoc = await User.findOne({
             _id: fid,
-            ignoreList: {
+            ignorelist: {
                 $ne: ctx.params.id
             }
         }).exec();
@@ -110,24 +92,6 @@ export class FriendController {
         const result = {},
             fid = ctx.request.body.fid;
 
-        if (!ctx.params.id) {
-            ctx.params.id = ctx.user._id;
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(fid)) {
-            ctx.status = 400;
-            result.error = new errors.RequestDataError('Invalid parameter friend id');
-            ctx.body = result;
-            return;
-        }
-
-        if (!ctx.user._id.equals(ctx.params.id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to accept friends invitation for this user');
-            ctx.body = result;
-            return;
-        }
-
         const userDoc = await User.findByIdAndUpdate(ctx.params.id, {
             $addToSet: {
                 friends: fid
@@ -157,24 +121,6 @@ export class FriendController {
         const result = {},
             fid = ctx.request.body.fid;
 
-        if (!ctx.params.id) {
-            ctx.params.id = ctx.user._id;
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(fid)) {
-            ctx.status = 400;
-            result.error = new errors.RequestDataError('Invalid parameter friend id');
-            ctx.body = result;
-            return;
-        }
-
-        if (!ctx.user._id.equals(ctx.params.id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to decline friends invitation for this user');
-            ctx.body = result;
-            return;
-        }
-
         const userDoc = await User.findByIdAndUpdate(fid, {
             $pull: {
                 friends: ctx.params.id
@@ -203,24 +149,6 @@ export class FriendController {
     async deleteFriend(ctx) {
         const result = {},
             fid = ctx.params.fid;
-
-        if (!ctx.params.id) {
-            ctx.params.id = ctx.user._id;
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(fid)) {
-            ctx.status = 400;
-            result.error = new errors.RequestDataError('Invalid parameter friend id');
-            ctx.body = result;
-            return;
-        }
-
-        if (!ctx.user._id.equals(ctx.params.id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to delete a friend of this user');
-            ctx.body = result;
-            return;
-        }
 
         const friendDoc = await User.findByIdAndUpdate(fid, {
             $pull: {
@@ -253,17 +181,6 @@ export class FriendController {
      */
     async getFriends(ctx) {
         const result = {};
-
-        if (!ctx.params.id) {
-            ctx.params.id = ctx.user._id;
-        }
-
-        if (!ctx.user._id.equals(ctx.params.id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to get friends of this user');
-            ctx.body = result;
-            return;
-        }
 
         let user;
         if (ctx.user._id.equals(ctx.params.id)) {

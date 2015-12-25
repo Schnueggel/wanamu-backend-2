@@ -261,6 +261,58 @@ describe('User', function () {
             });
     });
 
+    it('Should ignore user', function (done) {
+        superagent.post(`localhost:9999/v1/user/${user._id}/ignore`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .send({id: user2._id})
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                done();
+            });
+    });
+
+    it('Should not be friends anymore', function (done) {
+        superagent.get(`localhost:9999/v1/user/${user._id}`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].friends.indexOf(user2._id.toString())).toEqual(-1);
+                done();
+            });
+    });
+
+    it('Should have friend removed', function (done) {
+        superagent.get(`localhost:9999/v1/user/${user2._id}`)
+            .set('Cookie', cookies2)
+            .set('Authorization', `Bearer ${token2}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].friends.indexOf(user._id.toString())).toEqual(-1);
+                done();
+            });
+    });
+
+    it('Should not allow friend invitation', function (done) {
+        superagent.post(`localhost:9999/v1/user/${user2._id}/friend`)
+            .set('Cookie', cookies2)
+            .set('Authorization', `Bearer ${token2}`)
+            .type('json')
+            .send({fid: dbData.userDoc1._id})
+            .end((err, res) => {
+                expect(res.status).toEqual(404);
+                done();
+            });
+    });
+
     it('Should delete user', function (done) {
         superagent.delete(`localhost:9999/v1/user/${user._id}`)
             .set('Cookie', cookies)
@@ -303,6 +355,9 @@ describe('User', function () {
             .type('json')
             .end((err, res) => {
                 expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].password).toEqual(undefined);
                 done();
             });
     });
