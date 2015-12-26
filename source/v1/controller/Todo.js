@@ -188,6 +188,13 @@ export class TodoController {
             return;
         }
 
+        if (todoDoc.parent) {
+            ctx.status = 422;
+            result.error = new errors.RequestDataError('Cannot share shared todo');
+            ctx.body = result;
+            return;
+        }
+
         if (!todoDoc.owner.equals(ctx.user._id) && !ctx.user.isAdmin) {
             ctx.status = 403;
             result.error = new errors.AccessDeniedError('Not enough rights to share this todo');
@@ -199,6 +206,7 @@ export class TodoController {
 
         share = share.filter(v => mongoose.Types.ObjectId.isValid(v));
 
+        // No self sharing? Perhaps we should put the parent todo owner to the sharing user to make everything equal
         const index = share.indexOf(todoDoc.owner);
 
         if (index > -1) {
@@ -207,12 +215,13 @@ export class TodoController {
 
         if( _.isEmpty(share)) {
             ctx.status = 422;
-            result.error = new errors.RequestDataError('Field share must be of type array');
+            result.error = new errors.RequestDataError('Request data share should not be empty');
             ctx.body = result;
             return;
         }
 
-        const userForShare = await User.find({
+        // Find the users for sharing.
+        let userForShare = await User.find({
             _id: {
                 $in: share
             },
@@ -224,24 +233,31 @@ export class TodoController {
             }
         }).exec();
 
-        if (!userForShare) {
+        if (_.isEmpty(userForShare)) {
             ctx.status = 404;
             result.error = new errors.NotFoundError('No valid user for sharing');
             ctx.body = result;
             return;
         }
 
-        const todoDocJson = todoDoc.toJSON();
+        userForShare = userForShare.filter( (v) => todoDoc.shared.indexOf(v._id) === -1);
 
+        const todoDocJson = todoDoc.toJSON();
         todoDocJson.parent = todoDoc._id;
         delete todoDocJson._id;
 
-
         const todos = userForShare.map(user => {
+            todoDocJson.owner = user._id;
             todoDocJson.todolistId = user.defaultTodolistId;
-
             return todoDocJson;
         });
+
+        if (todos.length === 0) {
+            ctx.status = 204;
+            result.data = [];
+            ctx.body = result;
+            return;
+        }
 
         const todoDocs = await new BluePromise((resolve) => {
             Todo.collection.insert(todos, (err, doc) => {
@@ -260,6 +276,12 @@ export class TodoController {
             ctx.body = result;
             return;
         }
+
+        await Todo.update({
+            _id: todoDoc._id
+        }, {
+            shared: userForShare.map( v => v._id )
+        });
 
         result.data = todoDocs.insertedIds;
 

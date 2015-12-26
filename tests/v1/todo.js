@@ -57,7 +57,7 @@ describe('Todo', function () {
             });
     });
 
-    it('Should have shared todo', function (done) {
+    it('Should share todo', function (done) {
         superagent.post(`localhost:9999/v1/todo/${todo._id}/share`)
             .send({
                 share: [dbData.userDoc2._id]
@@ -73,6 +73,31 @@ describe('Todo', function () {
             });
     });
 
+    it('Should find sharing user', function (done) {
+        superagent.get(`localhost:9999/v1/todo/${todo._id}`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data[0].shared[0]).toEqual(dbData.userDoc2._id.toString());
+                done();
+            });
+    });
+
+    it('Should not share todo', function (done) {
+        superagent.post(`localhost:9999/v1/todo/${todo._id}/share`)
+            .send({
+                share: [dbData.userDoc2._id]
+            })
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(204);
+                done(err);
+            });
+    });
 
     it('Should login user 2', function (done) {
         superagent.post('localhost:9999/v1/auth/login')
@@ -87,7 +112,7 @@ describe('Todo', function () {
             });
     });
 
-    it('Should get new todo', function (done) {
+    it('Should have shared todo', function (done) {
         superagent.get('localhost:9999/v1/todolist/' + user2.defaultTodolistId)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)

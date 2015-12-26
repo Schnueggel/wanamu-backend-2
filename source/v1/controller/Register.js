@@ -1,9 +1,6 @@
-import User from '../models/User';
-import Todolist from '../models/Todolist';
 import mongoose from 'mongoose';
 import errors from '../errors';
 import userService from '../services/user';
-import { Constants } from '../config/constants';
 import * as _ from 'lodash';
 
 export class RegisterController {

@@ -37,6 +37,7 @@ export const todoSchema = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId
     },
+    shared: [mongoose.Schema.Types.ObjectId],
     accepted: {
         type: Boolean,
         default: false
