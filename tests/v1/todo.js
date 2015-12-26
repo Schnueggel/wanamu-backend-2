@@ -69,6 +69,7 @@ describe('Todo', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].shared.indexOf(dbData.userDoc2._id.toString())).toEqual(0);
                 done(err);
             });
     });
@@ -121,8 +122,23 @@ describe('Todo', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].owner).toEqual(user._id.toString());
+                expect(res.body.data[0].owner).toEqual(user2._id.toString());
                 expect(res.body.data[0].parent).toEqual(todo._id.toString());
+                done();
+            });
+    });
+
+    it('Should ushared todo', function (done) {
+        superagent.post(`localhost:9999/v1/todo/${todo._id}/unshare/${user2._id}`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data[0].owner).toEqual(user._id.toString());
+                expect(res.body.data[0].shared.indexOf(user2._id.toString())).toEqual(-1);
                 done();
             });
     });

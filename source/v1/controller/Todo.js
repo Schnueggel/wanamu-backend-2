@@ -169,7 +169,7 @@ export class TodoController {
      * }
      * @param ctx
      */
-    async shareTodo(ctx) {
+    async share(ctx) {
         const result = {};
 
         const todoDoc = await Todo.findById(ctx.params.id).exec();
@@ -177,6 +177,13 @@ export class TodoController {
         if (!todoDoc) {
             ctx.status = 404;
             result.error = new errors.NotFoundError('Todo not found');
+            ctx.body = result;
+            return;
+        }
+
+        if (!todoDoc.owner.equals(ctx.user._id) && !ctx.user.isAdmin) {
+            ctx.status = 403;
+            result.error = new errors.AccessDeniedError('Not enough rights to share this todo');
             ctx.body = result;
             return;
         }
@@ -191,13 +198,6 @@ export class TodoController {
         if (todoDoc.parent) {
             ctx.status = 422;
             result.error = new errors.RequestDataError('Cannot share shared todo');
-            ctx.body = result;
-            return;
-        }
-
-        if (!todoDoc.owner.equals(ctx.user._id) && !ctx.user.isAdmin) {
-            ctx.status = 403;
-            result.error = new errors.AccessDeniedError('Not enough rights to share this todo');
             ctx.body = result;
             return;
         }
@@ -277,13 +277,81 @@ export class TodoController {
             return;
         }
 
-        await Todo.update({
-            _id: todoDoc._id
-        }, {
+        const updatedTodo = await Todo.findByIdAndUpdate(todoDoc._id, {
             shared: userForShare.map( v => v._id )
+        }, {new:true});
+
+        result.data = [updatedTodo];
+
+        ctx.body = result;
+    }
+
+    /**
+     * params {
+     *    id: <todoId>
+     *    uid: <userId>
+     * }
+     * @param ctx
+     */
+    async unShare(ctx) {
+        const result = {};
+
+        const todoDoc = await Todo.findById(ctx.params.id).exec();
+
+        if (!todoDoc) {
+            ctx.status = 404;
+            result.error = new errors.NotFoundError('Todo not found');
+            ctx.body = result;
+            return;
+        }
+
+        if (!todoDoc.owner.equals(ctx.user._id) && !ctx.user.isAdmin) {
+            ctx.status = 403;
+            result.error = new errors.AccessDeniedError('Not enough rights to share this todo');
+            ctx.body = result;
+            return;
+        }
+
+        if (todoDoc.parent) {
+            ctx.status = 422;
+            result.error = new errors.RequestDataError('Todo is a shared todo');
+            ctx.body = result;
+            return;
+        }
+
+        const sharedTodoDoc = await Todo.findOne({
+            owner: ctx.params.uid,
+            parent: todoDoc._id
+        }).exec();
+
+        if (!sharedTodoDoc) {
+            ctx.status = 404;
+            result.error = new errors.NotFoundError('Shared Todo not found');
+            ctx.body = result;
+            return;
+        }
+
+        const updatedTodo = await Todo.findByIdAndUpdate(todoDoc._id, {
+            $pull: {
+                shared: ctx.params.uid
+            }
+        }, {new: true}).exec();
+
+        if (!updatedTodo) {
+            console.error(`Could not unshare todo ${todoDoc._id} with user ${ctx.params.uid}`);
+        }
+
+        const updatedSharedTodo = await Todo.update({
+            _id: sharedTodoDoc._id
+        }, {
+            parent: null
         });
 
-        result.data = todoDocs.insertedIds;
+        if (!updatedSharedTodo.ok) {
+            console.error(`Could not unshare shared todo ${sharedTodoDoc._id} with user ${ctx.params.uid}`);
+        }
+
+        result.data = [updatedTodo];
 
         ctx.body = result;
     }
