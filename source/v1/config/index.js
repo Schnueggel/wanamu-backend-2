@@ -1,8 +1,11 @@
 import nconf from 'nconf';
 
 export class Config {
-    constructor() {
+    static get requiredVars() {
+        return ['WU_MONGO', 'WU_JWT_SECRET', 'WU_SOCKET_PORT'];
+    }
 
+    constructor() {
         this.WU_MONGO_AUTOINDEX = true;
 
         nconf
@@ -18,11 +21,19 @@ export class Config {
     }
 
     validateConfig() {
-        const notFoundEnvs = ['WU_MONGO', 'WU_JWT_SECRET'].filter( env => this[env] === undefined);
+        const notFoundEnvs = Config.requiredVars.filter( env => this[env] === undefined);
 
         if (notFoundEnvs.length > 0) {
             throw new Error(`Missing environment vars ${notFoundEnvs.join(',\n')}`);
         }
+    }
+
+    get WU_SOCKET_PORT() {
+        return this._WU_SOCKET_PORT;
+    }
+
+    set WU_SOCKET_PORT(value) {
+        this._WU_SOCKET_PORT = value;
     }
 
     get WU_MONGO() {

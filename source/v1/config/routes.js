@@ -7,6 +7,7 @@ import todo from '../controller/todo';
 import auth from '../controller/Auth';
 import user from '../controller/User';
 import friend from '../controller/Friend';
+import notification from '../controller/Notification';
 
 import authCheck from '../middleware/auth';
 import checkUserId from '../middleware/checkUserId';

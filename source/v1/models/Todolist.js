@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import BluePromise from 'bluebird';
 
 export const todolistSchema = new mongoose.Schema({
     name: {

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import BluePromise from 'bluebird';
 
 export const Colors = {
     color1: 'color1',
@@ -42,6 +41,7 @@ export const todoSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    finishedCount: Number,
     todolistId: {
         type: mongoose.Schema.Types.ObjectId,
         index: true,
