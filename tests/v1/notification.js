@@ -56,7 +56,7 @@ describe('App Notification', function () {
         io = ioClient('http://localhost:8888/notification', opts);
 
         io.on('error', (error) => {
-            expect(error).toEqual('[404] Authorization token not found')
+            expect(error).toEqual('[404] Authorization token not found');
             done();
         });
 
