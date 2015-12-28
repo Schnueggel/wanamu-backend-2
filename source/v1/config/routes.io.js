@@ -6,9 +6,8 @@ export default (io) => {
         .of('/notification')
         .use(authIO)
         .on('connection', (socket) => {
-            socket.on('register', notification.register);
-            socket.on('disconnect', () => {
-                socket.on('unregister', notification.unRegister);
-            });
+            notification.register(socket);
+            socket.on('disconnect', () => notification.unRegister(socket));
+            socket.on('getConnections', () => notification.getConnections(socket));
         });
 };

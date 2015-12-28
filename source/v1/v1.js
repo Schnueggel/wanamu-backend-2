@@ -5,6 +5,7 @@ import bodyParser from 'koa-bodyparser';
 import mongo from './config/mongo';
 import router from './config/routes';
 import io from './config/socketio';
+import redis from './config/redis';
 import routesIO from './config/routes.io';
 
 const app = new Koa();

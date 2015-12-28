@@ -4,7 +4,7 @@ export class Config {
     static get requiredVars() {
         return ['WU_MONGO', 'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST'];
     }
-private _WU_REDIS_HOST
+
     constructor() {
         this.WU_MONGO_AUTOINDEX = true;
 

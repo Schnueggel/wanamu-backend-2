@@ -11,7 +11,7 @@ const options = {
 };
 
 describe('App Notification', function () {
-    let server, io, token, user;
+    let server, io, io2, io3, token, user;
 
     before(function (done) {
         setUp().then( () => {
@@ -44,12 +44,63 @@ describe('App Notification', function () {
             io.close();
             done();
         });
+    });
 
-        io.on('connect', function() {
-            io.emit('register');
+    it('Should multi register to notification', function (done) {
+        const opts = Object.assign({query: 'jwt=' + token}, options);
+        io = ioClient('http://localhost:8888/notification', opts);
+        io2 = ioClient('http://localhost:8888/notification', opts);
+
+        let mDone = () => () => done();
+        io.on('register', (data) => {
+            expect(data).toBe(true);
+            mDone = mDone();
+        });
+
+        io2.on('register', (data) => {
+            expect(data).toBe(true);
+            mDone = mDone();
         });
     });
 
+    it('Should have 3 connections', function (done) {
+        const opts = Object.assign({query: 'jwt=' + token}, options);
+
+        io3 = ioClient('http://localhost:8888/notification', opts);
+
+        io3.on('getConnections', (data) => {
+            console.log(data);
+            expect(data).toBeAn('object');
+            expect(data.socketIds).toBeAn('array');
+            expect(data.socketIds.length).toEqual(3);
+            io.close();
+            io2.close();
+            io3.close();
+            done();
+        });
+
+        io3.on('connect', () => {
+            io3.emit('getConnections');
+        });
+    });
+
+    it('Should have 1 connections', function (done) {
+        const opts = Object.assign({query: 'jwt=' + token}, options);
+
+        io = ioClient('http://localhost:8888/notification', opts);
+
+        io.on('getConnections', (data) => {
+            expect(data).toBeAn('object');
+            expect(data.socketIds).toBeAn('array');
+            expect(data.socketIds.length).toEqual(1);
+            io.close();
+            done();
+        });
+
+        io.on('connect', () => {
+            io.emit('getConnections');
+        });
+    });
 
     it('Should not register to notification', function (done) {
         const opts = Object.assign({query: 'jwt='}, options);
@@ -64,4 +115,5 @@ describe('App Notification', function () {
             io.emit('register');
         });
     });
+
 });
