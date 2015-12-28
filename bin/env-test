@@ -1,3 +1,4 @@
 export WU_MONGO=mongodb://localhost:27017/wanamu-test
 export WU_JWT_SECRET=12345678
 export WU_SOCKET_PORT=8888
+export WU_REDIS_HOST=localhost

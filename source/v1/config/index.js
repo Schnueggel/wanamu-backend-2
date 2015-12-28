@@ -2,9 +2,9 @@ import nconf from 'nconf';
 
 export class Config {
     static get requiredVars() {
-        return ['WU_MONGO', 'WU_JWT_SECRET', 'WU_SOCKET_PORT'];
+        return ['WU_MONGO', 'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST'];
     }
-
+private _WU_REDIS_HOST
     constructor() {
         this.WU_MONGO_AUTOINDEX = true;
 
@@ -26,6 +26,15 @@ export class Config {
         if (notFoundEnvs.length > 0) {
             throw new Error(`Missing environment vars ${notFoundEnvs.join(',\n')}`);
         }
+    }
+
+
+    get WU_REDIS_HOST() {
+        return this._WU_REDIS_HOST;
+    }
+
+    set WU_REDIS_HOST(value) {
+        this._WU_REDIS_HOST = value;
     }
 
     get WU_SOCKET_PORT() {
