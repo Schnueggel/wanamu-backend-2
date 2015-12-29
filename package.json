@@ -15,7 +15,8 @@
     "build": "rm -rf dist && \"./node_modules/.bin/\"babel source --out-dir dist --source-maps --extends .babelrc",
     "build-watch": "rm -rf dist && npm run build -- -w",
     "build-run": "npm run build && node dist/index.js",
-    "run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --no-daemon"
+    "run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --no-daemon",
+    "run": "./node_modules/.bin/pm2 start dist/index.js --no-daemon"
   },
   "homepage": "https://github.com/Schnueggel/wanamu-backend-2",
   "author": "Christian Steinmann",

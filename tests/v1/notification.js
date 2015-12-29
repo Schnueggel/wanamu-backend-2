@@ -1,9 +1,9 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setUp } from '../../dist/v1/tools/setup';
+import { setupDb, createServer } from '../../dist/v1/tools/setup';
 import ioClient from 'socket.io-client';
-import app from '../../dist/v1/v1';
+import config from '../../dist/v1/config';
 
 const options = {
     transports: ['websocket'],
@@ -13,9 +13,12 @@ const options = {
 describe('App Notification', function () {
     let server, io, io2, io3, token, user;
 
+    const baseUrl = `http://localhost:${config.WU_PORT}`;
+
     before(function (done) {
-        setUp().then( () => {
-            server = app.listen(9999, '127.0.0.1', done);
+        setupDb().then( () => {
+            server = createServer(config.WU_PORT);
+            done();
         }).catch(done);
     });
 
@@ -24,7 +27,7 @@ describe('App Notification', function () {
     });
 
     it('Should login', function (done) {
-        superagent.post('localhost:9999/v1/auth/login')
+        superagent.post(`${baseUrl}/v1/auth/login`)
             .type('json')
             .send({username: 'christian.steinmann.test@gmail.com', password: '12345678'})
             .end((err, res) => {
@@ -37,7 +40,7 @@ describe('App Notification', function () {
 
     it('Should register to notification', function (done) {
         const opts = Object.assign({query: 'jwt=' + token}, options);
-        io = ioClient('http://localhost:8888/notification', opts);
+        io = ioClient(`${baseUrl}/notification`, opts);
 
         io.on('register', (data) => {
             expect(data).toBe(true);
@@ -48,8 +51,8 @@ describe('App Notification', function () {
 
     it('Should multi register to notification', function (done) {
         const opts = Object.assign({query: 'jwt=' + token}, options);
-        io = ioClient('http://localhost:8888/notification', opts);
-        io2 = ioClient('http://localhost:8888/notification', opts);
+        io = ioClient(`${baseUrl}/notification` , opts);
+        io2 = ioClient(`${baseUrl}/notification` , opts);
 
         let mDone = () => () => done();
         io.on('register', (data) => {
@@ -66,10 +69,9 @@ describe('App Notification', function () {
     it('Should have 3 connections', function (done) {
         const opts = Object.assign({query: 'jwt=' + token}, options);
 
-        io3 = ioClient('http://localhost:8888/notification', opts);
+        io3 = ioClient(`${baseUrl}/notification`, opts);
 
         io3.on('getConnections', (data) => {
-            console.log(data);
             expect(data).toBeAn('object');
             expect(data.socketIds).toBeAn('array');
             expect(data.socketIds.length).toEqual(3);
@@ -87,7 +89,7 @@ describe('App Notification', function () {
     it('Should have 1 connections', function (done) {
         const opts = Object.assign({query: 'jwt=' + token}, options);
 
-        io = ioClient('http://localhost:8888/notification', opts);
+        io = ioClient(`${baseUrl}/notification` , opts);
 
         io.on('getConnections', (data) => {
             expect(data).toBeAn('object');
@@ -104,7 +106,7 @@ describe('App Notification', function () {
 
     it('Should not register to notification', function (done) {
         const opts = Object.assign({query: 'jwt='}, options);
-        io = ioClient('http://localhost:8888/notification', opts);
+        io = ioClient(`${baseUrl}/notification`, opts);
 
         io.on('error', (error) => {
             expect(error).toEqual('[404] Authorization token not found');

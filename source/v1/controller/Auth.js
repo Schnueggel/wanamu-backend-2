@@ -15,19 +15,21 @@ export class Auth {
 
         const login = new Login(ctx.request.body);
 
-        const err = await login.validate();
-
-        if (err instanceof mongoose.Error.ValidationError) {
-            result.error = errors.ValidationError.fromMongooseValidationError(err);
-            ctx.status = 422;
-            ctx.body = result;
-            return;
-        } else if (err instanceof Error) {
-            console.error(err);
-            ctx.status = 500;
-            result.error = new Error('Unable to process request');
-            ctx.body = result;
-            return;
+        try {
+            await login.validate();
+        }catch(err) {
+            if (err instanceof mongoose.Error.ValidationError) {
+                result.error = errors.ValidationError.fromMongooseValidationError(err);
+                ctx.status = 422;
+                ctx.body = result;
+                return;
+            } else if (err instanceof Error) {
+                console.error(err);
+                ctx.status = 500;
+                result.error = new Error('Unable to process request');
+                ctx.body = result;
+                return;
+            }
         }
 
         const user = await User.findOne({

@@ -1,16 +1,16 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setUp } from '../../dist/v1/tools/setup';
-import app from '../../dist/v1/v1';
+import { setupDb, createServer } from '../../dist/v1/tools/setup';
 import { Constants } from '../../dist/v1/config/constants';
 import mongoose from 'mongoose';
 
 describe('App Register', function () {
     let server;
     before(function (done) {
-        setUp().then( () => {
-            server = app.listen(9999, '127.0.0.1', done);
+        setupDb().then( () => {
+            server = createServer(9999);
+            done();
         }).catch(done);
     });
 

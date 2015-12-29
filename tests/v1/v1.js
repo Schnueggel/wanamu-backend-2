@@ -1,15 +1,15 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setUp } from '../../dist/v1/tools/setup';
-import app from '../../dist/v1/v1';
+import { setupDb, createServer } from '../../dist/v1/tools/setup';
 
 describe ('App Running', function() {
     let server;
 
     before(function(done) {
-        setUp().then(() => {
-            server = app.listen(9999, '127.0.0.1', done);
+        setupDb().then(() => {
+            server = createServer(9999);
+            done();
         }).catch(done);
     });
 

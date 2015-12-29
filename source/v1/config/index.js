@@ -2,7 +2,7 @@ import nconf from 'nconf';
 
 export class Config {
     static get requiredVars() {
-        return ['WU_MONGO', 'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST'];
+        return ['WU_MONGO', 'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'WU_PORT'];
     }
 
     constructor() {
@@ -69,7 +69,13 @@ export class Config {
         this._WU_JWT_SECRET = value;
     }
 
+    get WU_PORT() {
+        return this._WU_PORT;
+    }
 
+    set WU_PORT(value) {
+        this._WU_PORT = value;
+    }
 }
 
 

@@ -5,6 +5,8 @@ import errors from '../errors';
 import jwt from 'jwt-simple';
 
 export default async (ctx, next) => {
+    console.log('Auth check');
+
     const csrfToken = ctx.cookies.get(Constants.csrfToken);
 
     if (!csrfToken) {

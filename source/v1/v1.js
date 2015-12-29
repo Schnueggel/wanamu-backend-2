@@ -7,16 +7,37 @@ import router from './config/routes';
 import io from './config/socketio';
 import redis from './config/redis';
 import routesIO from './config/routes.io';
+import config from './config';
+import http from 'http';
 
-const app = new Koa();
+const v1 = {
+    create(server){
+        const app = new Koa();
 
-mongo.open();
+        mongo.open();
 
-app.use(bodyParser())
-    .use(router.routes())
-    .use(router.allowedMethods());
+        app.use(bodyParser())
+            .use(router.routes())
+            .use(router.allowedMethods());
 
-routesIO(io);
+        routesIO(io.create(server));
 
-console.log('Created App');
-export default app;
+        app.server = server;
+
+        return app;
+    }
+};
+
+export default v1;
+
+/**
+ * If this app is started es script we create a server and run it
+ */
+if (!module.parent) {
+    const server = http.createServer();
+    const app = v1.create(server);
+
+    server.on('request', app.callback());
+
+    server.listen(config.WU_PORT, '0.0.0.0');
+}

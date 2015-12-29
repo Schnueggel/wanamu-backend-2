@@ -1,8 +1,7 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setUp } from '../../dist/v1/tools/setup';
-import app from '../../dist/v1/v1';
+import { setupDb, createServer } from '../../dist/v1/tools/setup';
 
 describe('Todo', function () {
     let server,
@@ -13,9 +12,10 @@ describe('Todo', function () {
         user, user2;
 
     before(function (done) {
-        setUp().then( (data) => {
+        setupDb().then( (data) => {
             dbData = data;
-            server = app.listen(9999, '127.0.0.1', done);
+            server = createServer(9999);
+            done();
         }).catch(done);
     });
 

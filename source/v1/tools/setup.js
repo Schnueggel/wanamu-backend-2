@@ -1,3 +1,9 @@
+'use strict';
+
+/**
+ * This script delivers some convenient functions for debugging and testing
+ */
+
 import User from '../models/User';
 import Todo from '../models/Todo';
 import mongo from '../config/mongo';
@@ -5,14 +11,20 @@ import BluePromise from 'bluebird';
 import Todolist from '../models/Todolist';
 import userService from '../services/user';
 import { Constants } from '../config/constants';
+import http from 'http';
+import v1 from '../v1';
 
-export const setUp = async function() {
+/**
+ * Db Setup
+ * @returns {*|string|Promise.<{}>}
+ */
+export const setupDb = async function() {
 
     console.log('Start Db Setup');
     await mongo.open();
     // Wait for indexes. This is important for the first test that runs.
-    await User.ensureIndexes();
-    await Todo.ensureIndexes();
+    //await User.ensureIndexes();
+    //await Todo.ensureIndexes();
     await mongo.drop();
 
     const data = {};
@@ -77,4 +89,22 @@ export const setUp = async function() {
     });
 
     return await BluePromise.resolve(data);
+};
+
+/**
+ * Creates a server from v1
+ * @param port
+ * @param host
+ * @param callback
+ * @returns {*}
+ */
+export const createServer = (port, host='localhost', callback=()=>{}) => {
+    const server = http.createServer();
+    const app = v1.create(server);
+
+    server.on('request', app.callback());
+
+    server.listen(port, host, callback);
+
+    return server;
 };
