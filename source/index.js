@@ -45,7 +45,7 @@ export class Cluster {
         server.on('request', app.callback());
 
         server.listen(port, '0.0.0.0', () => {
-            console.info('Koa started at port ' + port);
+            console.info('Wanamu backend 2 started at port ' + port);
         });
     }
 

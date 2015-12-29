@@ -16,7 +16,8 @@
     "build-watch": "rm -rf dist && npm run build -- -w",
     "build-run": "npm run build && node dist/index.js",
     "run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --no-daemon",
-    "run": "./node_modules/.bin/pm2 start dist/index.js --no-daemon"
+    "run": "./node_modules/.bin/pm2 start dist/index.js --no-daemon",
+    "stop": "./node_modules/.bin/pm2 delete all"
   },
   "homepage": "https://github.com/Schnueggel/wanamu-backend-2",
   "author": "Christian Steinmann",

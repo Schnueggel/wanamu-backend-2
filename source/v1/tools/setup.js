@@ -22,9 +22,6 @@ export const setupDb = async function() {
 
     console.log('Start Db Setup');
     await mongo.open();
-    // Wait for indexes. This is important for the first test that runs.
-    //await User.ensureIndexes();
-    //await Todo.ensureIndexes();
     await mongo.drop();
 
     const data = {};

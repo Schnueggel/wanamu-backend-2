@@ -14,13 +14,13 @@ describe('App Cluster', function () {
     before(function (done) {
         this.timeout(10000);
         setupDb().then(() => {
-            cluster = child_process.exec('npm run run', done);
+            cluster = child_process.exec('npm run run -f', done);
             setTimeout(done, 6000);
         }).catch(done);
     });
 
     after(function () {
-        cluster.kill();
+        child_process.exec('npm stop');
     });
 
     it('Should login', function (done) {

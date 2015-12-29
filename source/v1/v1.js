@@ -31,7 +31,7 @@ const v1 = {
 export default v1;
 
 /**
- * If this app is started es script we create a server and run it
+ * If this app is started as script we create a server and run it
  */
 if (!module.parent) {
     const server = http.createServer();
