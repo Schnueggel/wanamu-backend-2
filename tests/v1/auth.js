@@ -2,26 +2,18 @@
 import superagent from 'superagent';
 import expect from 'expect';
 import jwt from 'jwt-simple';
-import { setupDb, createServer } from '../../dist/v1/tools/setup';
+import { setupDb } from '../../dist/v1/tools/setup';
 import config from '../../dist/v1/config';
 
 describe('App Auth', function () {
-    let server,
-        token,
+    let token,
         cookies;
 
     before(function (done) {
-        setupDb().then(() => {
-            server = createServer(9999);
-            done();
-        }).catch((err) => {
+        setupDb().then(() =>   done()).catch((err) => {
             console.error(err);
             done();
         });
-    });
-
-    after(function () {
-        server.close();
     });
 
     it('Should login', function (done) {

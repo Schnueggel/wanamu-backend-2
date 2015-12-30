@@ -7,13 +7,11 @@ import cluster from 'cluster';
 import os from 'os';
 import http from 'http';
 
-//Import all versions
 import v1 from './v1/v1.js';
 
 export class Cluster {
 
     constructor(cpus=1) {
-        this.cluster = cluster;
         this.workers = [];
 
         if (cluster.isMaster) {
@@ -67,8 +65,6 @@ export class Cluster {
     }
 }
 
-let clusterNode;
-
 if (!module.parent) {
-    clusterNode = new Cluster(process.env.WU_CPUS || os.cpus().length);
+    new Cluster(process.env.WU_CPUS || os.cpus().length);
 }

@@ -1,7 +1,7 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setupDb, createServer } from '../../dist/v1/tools/setup';
+import { setupDb } from '../../dist/v1/tools/setup';
 import ioClient from 'socket.io-client';
 import config from '../../dist/v1/config';
 
@@ -11,19 +11,12 @@ const options = {
 };
 
 describe('App Notification', function () {
-    let server, io, io2, io3, token, user;
+    let io, io2, io3, token, user;
 
     const baseUrl = `http://localhost:${config.WU_PORT}`;
 
     before(function (done) {
-        setupDb().then( () => {
-            server = createServer(config.WU_PORT);
-            done();
-        }).catch(done);
-    });
-
-    after(function () {
-        server.close();
+        setupDb().then( () =>  done()).catch(done);
     });
 
     it('Should login', function (done) {

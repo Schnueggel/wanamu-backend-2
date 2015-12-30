@@ -1,11 +1,10 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setupDb, createServer } from '../../dist/v1/tools/setup';
+import { setupDb } from '../../dist/v1/tools/setup';
 
 describe('Todo', function () {
-    let server,
-        token, token2,
+    let token, token2,
         cookies, cookies2,
         todo,
         dbData,
@@ -14,14 +13,10 @@ describe('Todo', function () {
     before(function (done) {
         setupDb().then( (data) => {
             dbData = data;
-            server = createServer(9999);
             done();
         }).catch(done);
     });
 
-    after(function () {
-        server.close();
-    });
 
     it('Should login', function (done) {
         superagent.post('localhost:9999/v1/auth/login')

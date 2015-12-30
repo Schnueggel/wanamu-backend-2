@@ -6,21 +6,22 @@ import child_process from 'child_process';
 import { setupDb } from '../dist/v1/tools/setup';
 import config from '../dist/v1/config';
 
+before(function (done) {
+    this.timeout(10000);
+    child_process.exec('npm run run -f');
+    setTimeout(done, 6000);
+});
+
+after(function (done) {
+    child_process.exec('npm stop', done);
+});
+
 describe('App Cluster', function () {
-    let cluster,
-        token,
+    let token,
         cookies;
 
     before(function (done) {
-        this.timeout(10000);
-        setupDb().then(() => {
-            cluster = child_process.exec('npm run run -f', done);
-            setTimeout(done, 6000);
-        }).catch(done);
-    });
-
-    after(function () {
-        child_process.exec('npm stop');
+        setupDb().then(() => done()).catch(done);
     });
 
     it('Should login', function (done) {

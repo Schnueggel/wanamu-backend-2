@@ -1,23 +1,17 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setupDb, createServer } from '../../dist/v1/tools/setup';
+import { setupDb } from '../../dist/v1/tools/setup';
 
 describe('App Todolist', function () {
-    let server,
-        token,
+    let token,
         cookies,
         user;
 
     before(function (done) {
         setupDb().then( () => {
-            server = createServer(9999);
             done();
         }).catch(done);
-    });
-
-    after(function () {
-        server.close();
     });
 
     it('Should not get todos', function (done) {

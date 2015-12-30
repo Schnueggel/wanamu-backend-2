@@ -1,11 +1,10 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setupDb, createServer } from '../../dist/v1/tools/setup';
+import { setupDb} from '../../dist/v1/tools/setup';
 
 describe('User', function () {
-    let server,
-        token,token2, token3,
+    let token,token2, token3,
         cookies, cookies2, cookies3,
         dbData,
         user, user2, user3;
@@ -13,13 +12,8 @@ describe('User', function () {
     before(function (done) {
         setupDb().then((data) => {
             dbData = data;
-            server = createServer(9999);
             done();
         }).catch(done);
-    });
-
-    after(function () {
-        server.close();
     });
 
     it('Should login', function (done) {
