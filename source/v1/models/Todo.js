@@ -60,7 +60,8 @@ export const todoSchema = new mongoose.Schema({
  * @extends Mongoose.Model
  * @augments todoSchema
  * @memberOf wu.model
- * @property {Mongoose.Schema.Types.ObjectId} _id
+ * @property {Mongoose.Types.ObjectId} _id
+ * @property {Mongoose.Types.ObjectId} owner
  */
 const Model = mongoose.model('Todo', todoSchema);
 

@@ -156,7 +156,7 @@ describe('Todo', function () {
         });
     });
 
-    it('Should ushared todo', function (done) {
+    it('Should unshare todo', function (done) {
         superagent.post(`${baseUrl}/v1/todo/${todo._id}/unshare/${user2._id}`)
             .send({})
             .set('Cookie', cookies)

@@ -1,6 +1,6 @@
 import sio from '../config/socketio';
 import Notification from '../models/Notification';
-import socketEmitter from 'socket.io-emitter';
+import * as socketEmitter from 'socket.io-emitter';
 export const Events = {
     Shared_Todo_Updated: 'Shared_Todo_Updated'
 };
@@ -9,7 +9,7 @@ export class NotificationService {
 
     /**
      *
-     * @param {string} userId
+     * @param {string|Mongoose.Types.ObjectId} userId
      * @param {wu.model.Notification} notification
      * @param {string} event
      */
@@ -54,7 +54,7 @@ export class NotificationService {
      * @param {number} limit
      * @param {number} page
      * @param {string} sort
-     * @returns Array<wu.model.Notification>
+     * @returns Number
      */
     async countNotifications(userId) {
         return await Notification.count({
