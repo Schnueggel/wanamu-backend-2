@@ -23,6 +23,12 @@
       "always"
     ]
   },
+  "globals": {
+    "it": true,
+    "describe": true,
+    "before": true,
+    "after": true
+  },
   "env": {
     "es6": true,
     "node": true,
