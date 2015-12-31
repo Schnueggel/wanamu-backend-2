@@ -6,7 +6,9 @@ import rewrite from 'koa-rewrite';
 import cluster from 'cluster';
 import os from 'os';
 import http from 'http';
+
 import v1 from './v1/v1.js';
+import log from './v1/config/log';
 
 /**
  * TODO Perhaps we should use pm2 to create the cluster but if we want to proxy socket.io polling perhaps difficult
@@ -17,7 +19,7 @@ export class Cluster {
         this.workers = [];
 
         if (cluster.isMaster) {
-            console.log('Master starts');
+            log.info('Master starts');
             for (let i = 0; i < cpus; i++) {
                 this.workers[i] = cluster.fork();
             }
@@ -41,12 +43,12 @@ export class Cluster {
         server.on('request', app.callback());
 
         server.listen(port, '0.0.0.0', () => {
-            console.info('Wanamu backend 2 started at port ' + port);
+            log.info('Wanamu backend 2 started at port ' + port);
         });
     }
 
     onExit(worker) {
-        console.log(`Worker with id %${worker.id} died`);
+        log.error(`Worker with id %${worker.id} died`);
         this.workers.forEach( (v,i)=> {
             if (v === worker) {
                 this.workers[i] = cluster.fork();
