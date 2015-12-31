@@ -15,9 +15,9 @@
     "build": "rm -rf dist && \"./node_modules/.bin/\"babel source --out-dir dist --source-maps --extends .babelrc",
     "build-watch": "rm -rf dist && npm run build -- -w",
     "build-run": "npm run build && node dist/index.js",
-    "run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --no-daemon",
-    "run": "./node_modules/.bin/pm2 start dist/index.js",
-    "stop": "./node_modules/.bin/pm2 delete all",
+    "run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --name=\"api\"",
+    "start": "./node_modules/.bin/pm2 start dist/index.js --name=\"api\"",
+    "stop": "./node_modules/.bin/pm2 delete api",
     "pm": "./node_modules/.bin/pm2 list"
   },
   "homepage": "https://github.com/Schnueggel/wanamu-backend-2",
@@ -29,6 +29,7 @@
   "dependencies": {
     "bcrypt": "^0.8.5",
     "bluebird": "^3.1.1",
+    "bunyan": "^1.5.1",
     "jwt-simple": "^0.4.0",
     "kerberos": "0.0.17",
     "koa": "^2.0.0-alpha.3",
