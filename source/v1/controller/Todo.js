@@ -44,8 +44,6 @@ export class TodoController {
             const newTodoDoc = await todoDoc.save();
 
             if (todoDoc.parent && finished !== newTodoDoc.finished) {
-                //TODO update notification and finished count
-
                 let operation = '$addToSet';
 
                 if (!todoDoc.finished) {

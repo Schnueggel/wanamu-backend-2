@@ -11,12 +11,15 @@ const options = {
 };
 
 describe('App Notification', function () {
-    let io, token, user;
+    let io, token, user, cookies, dbData;
 
     const baseUrl = `http://localhost:${config.WU_PORT}`;
 
     before(function (done) {
-        setupDb().then( () =>  done()).catch(done);
+        setupDb('-notification').then( (data) =>  {
+            dbData = data;
+            done();
+        }).catch(done);
     });
 
     it('Should login', function (done) {
@@ -27,6 +30,7 @@ describe('App Notification', function () {
                 expect(res.status).toEqual(200);
                 user = res.body.data[0];
                 token = res.body.token;
+                cookies = [res.headers['set-cookie'][0].match(/(csrf-token=[^;]+); /)[1]];
                 done();
             });
     });
@@ -67,5 +71,40 @@ describe('App Notification', function () {
         io.on('error', (err) => {
             done(err);
         });
+    });
+
+    it('Should get notifications', function (done) {
+        superagent.get(`${baseUrl}/v1/notification`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.page).toEqual(1);
+                expect(res.body.limit).toEqual(100);
+                expect(res.body.total).toEqual(53);
+                expect(res.body.data.length).toEqual(53);
+                expect(res.body.data[0].read).toEqual(true);
+                done();
+            });
+    });
+
+    it('Should have pagination', function (done) {
+        superagent.get(`${baseUrl}/v1/notification`)
+            .query({limit: 10, page:3})
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.page).toEqual(3);
+                expect(res.body.limit).toEqual(10);
+                expect(res.body.total).toEqual(53);
+                expect(res.body.data.length).toEqual(10);
+                expect(res.body.data[0].read).toEqual(true);
+                done();
+            });
     });
 });

@@ -65,4 +65,7 @@ router.post('/user/friend/decline', authCheck, checkUserIdMw, validObjectIdUsrFr
 router.delete('/user/:id/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
 router.delete('/user/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
 
+
+router.get('/notification', authCheck, notification.getNotifications);
+
 export default router;

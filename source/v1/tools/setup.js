@@ -6,6 +6,7 @@
 
 import User from '../models/User';
 import Todo from '../models/Todo';
+import Notification from '../models/Notification';
 import mongo from '../config/mongo';
 import BluePromise from 'bluebird';
 import Todolist from '../models/Todolist';
@@ -18,10 +19,10 @@ import v1 from '../v1';
  * Db Setup
  * @returns {*|string|Promise.<{}>}
  */
-export const setupDb = async function() {
+export const setupDb = async function(dbPostFix='') {
 
     console.log('Start Db Setup');
-    await mongo.open();
+    await mongo.open(dbPostFix);
     await mongo.drop();
 
     const data = {};
@@ -83,6 +84,27 @@ export const setupDb = async function() {
         $addToSet: {
             'todolists.$.todos': todoDoc._id
         }
+    });
+
+    let notes = [];
+
+    for(let i = 0; i < 53; i++) {
+        notes.push({
+            title: 'Notification',
+            message: 'Message',
+            owner: data.userDoc1._id,
+            read: i < 25
+        });
+    }
+
+    await new BluePromise((resolve, reject) => {
+        Notification.collection.insert(notes, (err, doc) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(doc);
+            }
+        });
     });
 
     return await BluePromise.resolve(data);

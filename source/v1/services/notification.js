@@ -29,6 +29,7 @@ export class NotificationService {
             owner: parentTodo.owner,
             meta: {parent: parentTodo.parent, shared: sharedTodo._id}
         });
+
         await this.send(parentTodo.owner, note, Events.Shared_Todo_Updated);
     }
 
@@ -36,13 +37,29 @@ export class NotificationService {
      *
      * @param {string} userId
      * @param {number} limit
+     * @param {number} page
      * @param {string} sort
      * @returns Array<wu.model.Notification>
      */
-    async getNotifications(userId, limit = 100, sort = '-read') {
+    async getNotifications(userId, limit = 100, page=1, sort = '-read') {
+
         return await Notification.find({
             owner: userId
-        }).sort(sort).limit(limit).exec();
+        }).sort(sort).limit(limit).skip((page-1)*limit).exec();
+    }
+
+    /**
+     *
+     * @param {string} userId
+     * @param {number} limit
+     * @param {number} page
+     * @param {string} sort
+     * @returns Array<wu.model.Notification>
+     */
+    async countNotifications(userId) {
+        return await Notification.count({
+            owner: userId
+        }).exec();
     }
 }
 
