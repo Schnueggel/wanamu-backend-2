@@ -3,10 +3,9 @@ import config from '../config';
 import User from '../models/User';
 import errors from '../errors';
 import jwt from 'jwt-simple';
+import log from '../config/log';
 
 export default async (ctx, next) => {
-    console.log('Auth check');
-
     const csrfToken = ctx.cookies.get(Constants.csrfToken);
 
     if (!csrfToken) {
@@ -78,6 +77,7 @@ export default async (ctx, next) => {
     const userDoc = await User.findById(payload.id, {password:0}).exec();
 
     if (!userDoc) {
+        log.error(`User ${payload.id} not found`);
         ctx.status = 401;
         ctx.body = {
             error: new errors.NotFoundError('User not found')

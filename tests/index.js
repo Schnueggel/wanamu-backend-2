@@ -8,7 +8,7 @@ import config from '../dist/v1/config';
 
 before(function (done) {
     this.timeout(10000);
-    child_process.exec('npm run run -f');
+    child_process.exec('npm start');
     setTimeout(done, 6000);
 });
 

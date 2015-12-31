@@ -9,6 +9,7 @@ import redis from './config/redis';
 import routesIO from './config/routes.io';
 import config from './config';
 import http from 'http';
+import log from './config/log';
 
 const v1 = {
     create(server){
@@ -24,6 +25,7 @@ const v1 = {
 
         app.server = server;
 
+        log.info('V1 App created');
         return app;
     }
 };

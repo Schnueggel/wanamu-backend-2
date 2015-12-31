@@ -6,22 +6,20 @@ import rewrite from 'koa-rewrite';
 import cluster from 'cluster';
 import os from 'os';
 import http from 'http';
-
 import v1 from './v1/v1.js';
 
+/**
+ * TODO Perhaps we should use pm2 to create the cluster but if we want to proxy socket.io polling perhaps difficult
+ */
 export class Cluster {
 
     constructor(cpus=1) {
         this.workers = [];
 
         if (cluster.isMaster) {
+            console.log('Master starts');
             for (let i = 0; i < cpus; i++) {
                 this.workers[i] = cluster.fork();
-                this.workers[i].on('message', (msg) => {
-                    if (msg.type != 'axm:monitor') {
-                        console.log(msg);
-                    }
-                });
             }
             cluster.on('exit', this.onExit.bind(this));
         } else {

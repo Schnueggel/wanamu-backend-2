@@ -5,6 +5,9 @@ import errors from '../errors';
 import mongoose from 'mongoose';
 import BluePromise from 'bluebird';
 import * as _ from 'lodash';
+import notificationService from '../services/notification';
+import Notification from '../models/Notification';
+import log from '../config/log';
 
 export class TodoController {
 
@@ -38,14 +41,35 @@ export class TodoController {
         Object.assign(todoDoc, _.pick(ctx.request.body, ['title', 'description', 'color', 'finished']));
 
         try {
-            const newTodoDoc = await todoDoc.save(),
-                changed = finished !== newTodoDoc.finished;
+            const newTodoDoc = await todoDoc.save();
 
-            if (todoDoc.finished && todoDoc.parent) {
+            if (todoDoc.parent && finished !== newTodoDoc.finished) {
                 //TODO update notification and finished count
+
+                let operation = '$addToSet';
+
+                if (!todoDoc.finished) {
+                    operation = '$pull';
+                }
+
+                const parentTodo = await Todo.findByIdAndUpdate(todoDoc.parent,{
+                    [operation]: {
+                        finishedChilds: todoDoc._id
+                    }
+                }, {new: true}).exec();
+
+                if (parentTodo && parentTodo.finished === false) {
+                    const note = notificationService.createSharedTodoUpdatedNotification(parentTodo, newTodoDoc);
+                    notificationService.send(todoDoc.parent, note);
+                    // We dont wait for saving this notification
+                    note.save();
+                } else {
+                    log.error(`Cant find parent Todo ${parentTodo} `);
+                }
             }
             result.data = [newTodoDoc.toJSON()];
         } catch(err) {
+            log.error(err);
             if (err instanceof mongoose.Error.ValidationError) {
                 result.error = errors.ValidationError.fromMongooseValidationError(err);
                 ctx.status = 422;
@@ -271,7 +295,7 @@ export class TodoController {
 
         if (todoDocs instanceof Error) {
             ctx.status = 500;
-            console.error(todoDocs);
+            log.error(todoDocs);
             result.error = new Error('Unable to create shared todos');
             ctx.body = result;
             return;
@@ -338,7 +362,7 @@ export class TodoController {
         }, {new: true}).exec();
 
         if (!updatedTodo) {
-            console.error(`Could not unshare todo ${todoDoc._id} with user ${ctx.params.uid}`);
+            log.error(`Could not unshare todo ${todoDoc._id} with user ${ctx.params.uid}`);
         }
 
         const updatedSharedTodo = await Todo.update({
@@ -348,7 +372,7 @@ export class TodoController {
         });
 
         if (!updatedSharedTodo.ok) {
-            console.error(`Could not unshare shared todo ${sharedTodoDoc._id} with user ${ctx.params.uid}`);
+            log.error(`Could not unshare shared todo ${sharedTodoDoc._id} with user ${ctx.params.uid}`);
         }
 
         result.data = [updatedTodo];

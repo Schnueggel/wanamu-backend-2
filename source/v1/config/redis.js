@@ -8,12 +8,12 @@ bluebird.promisifyAll(redis.Multi.prototype);
 export default {
     redis,
     createClient() {
-        if(!this.client) {
-            this.client = redis.createClient({
+        if(!this.redisClient) {
+            this.redisClient = redis.createClient({
                 host: config.WU_REDIS_HOST
             });
         }
-        return this.client;
+        return this.redisClient;
     }
 };
 

@@ -9,6 +9,7 @@ export const Colors = {
 };
 
 export const todoSchema = new mongoose.Schema({
+
     title: {
         type: String,
         trim: true,
@@ -41,7 +42,7 @@ export const todoSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    finishedCount: Number,
+    finishedChilds: [mongoose.Schema.Types.ObjectId],
     todolistId: {
         type: mongoose.Schema.Types.ObjectId,
         index: true,
@@ -49,6 +50,18 @@ export const todoSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+/**
+ * @namespace wu.model
+ */
+
+/**
+ *
+ * @name Todo
+ * @extends Mongoose.Model
+ * @augments todoSchema
+ * @memberOf wu.model
+ * @property {Mongoose.Schema.Types.ObjectId} _id
+ */
 const Model = mongoose.model('Todo', todoSchema);
 
 export default Model;

@@ -76,6 +76,14 @@ export class Config {
     set WU_PORT(value) {
         this._WU_PORT = value;
     }
+
+    get WU_APP_NAME() {
+        return this._WU_APP_NAME;
+    }
+
+    set WU_APP_NAME(value) {
+        this._WU_APP_NAME = value;
+    }
 }
 
 

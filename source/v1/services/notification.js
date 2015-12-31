@@ -1,5 +1,6 @@
 import io from '../config/socketio';
 import redis from '../config/redis';
+import Notification from '../models/Notification';
 
 export class NotificationService {
 
@@ -12,7 +13,7 @@ export class NotificationService {
     }
 
     constructor() {
-        this.client = redis.redis.createClient();
+        this.redisClient = redis.redis.createClient();
     }
 
     /**
@@ -22,7 +23,7 @@ export class NotificationService {
      * @returns {Promise}
      */
     register(userId, socketId) {
-        const multi = this.client.multi();
+        const multi = this.redisClient.multi();
 
         multi.hset(NotificationService.socketUserHash, socketId, userId);
         multi.lrem(this.getUserListName(userId), 0, socketId);
@@ -32,35 +33,57 @@ export class NotificationService {
     }
 
     unRegister(socketId) {
-        return this.client.hgetAsync(NotificationService.socketUserHash, socketId)
+        return this.redisClient.hgetAsync(NotificationService.socketUserHash, socketId)
             .then((userId) => {
                 if (userId) {
-                    this.client.lrem(this.getUserListName(userId), 0, socketId);
-                    this.client.hdel(NotificationService.socketUserHash, socketId);
+                    this.redisClient.lrem(this.getUserListName(userId), 0, socketId);
+                    this.redisClient.hdel(NotificationService.socketUserHash, socketId);
                 }
             });
     }
 
     getConnections(userId) {
-        return this.client.lrangeAsync(this.getUserListName(userId), 0, -1);
+        return this.redisClient.lrangeAsync(this.getUserListName(userId), 0, -1);
     }
 
-    send(userId, route, notification) {
-        this.client.lrangeAsync(this.getUserListName(userId), 0, -1)
-            .then((socketIds) => {
-                socketIds.forEach((socketId) => {
-                    const socket = io.sockets.connected[socketId];
-                    if (socket) {
-                        socket.emit(route, notification);
-                    } else {
-                        this.unRegister(socketId);
-                    }
-                });
-            }).catch(console.error);
+    /**
+     *
+     * @param {string} userId
+     * @param {wu.model.Notification} notification
+     * @param {string} event
+     */
+    async send(userId, notification, event = 'notification') {
+        io.to('room-' + userId).emit(event, notification);
     }
 
     getUserListName(userId) {
         return NotificationService.userSocketList + userId;
+    }
+
+    /**
+     *
+     * @param {wu.model.Todo} parentTodo
+     * @param {wu.model.Todo} sharedTodo
+     * @returns wu.model.Notification
+     */
+    createSharedTodoUpdatedNotification(parentTodo, sharedTodo) {
+        return new Notification({message: 'Shared todo was updated', title: 'Shared todo was updated', meta: {parent: parentTodo.parent, shared: sharedTodo._id}});
+    }
+
+    /**
+     *
+     * @returns RedisClient
+     */
+    get redisClient() {
+        return this._redisClient;
+    }
+
+    /**
+     *
+     * @param {RedisClient} value
+     */
+    set redisClient(value) {
+        this._redisClient = value;
     }
 }
 

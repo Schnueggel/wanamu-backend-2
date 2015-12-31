@@ -24,7 +24,7 @@ export const userSchema = new mongoose.Schema({
     salutation: {
         type: String,
         enum: {
-            values: Object.keys(Salutations).map(key => Salutations[key]),
+            values: Object.keys(Salutations),
             message: 'Invalid salutation {VALUE}'
         }
     },

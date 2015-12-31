@@ -11,7 +11,7 @@ const options = {
 };
 
 describe('App Notification', function () {
-    let io, io2, io3, token, user;
+    let io, token, user;
 
     const baseUrl = `http://localhost:${config.WU_PORT}`;
 
@@ -31,84 +31,31 @@ describe('App Notification', function () {
             });
     });
 
-    it('Should register to notification', function (done) {
+    it('Should connect to notification', function (done) {
         const opts = Object.assign({query: 'jwt=' + token}, options);
         io = ioClient(`${baseUrl}/notification`, opts);
-
-        io.on('register', (data) => {
-            expect(data).toBe(true);
-            io.close();
-            done();
-        });
-    });
-
-    it('Should multi register to notification', function (done) {
-        const opts = Object.assign({query: 'jwt=' + token}, options);
-        io = ioClient(`${baseUrl}/notification` , opts);
-        io2 = ioClient(`${baseUrl}/notification` , opts);
-
-        let mDone = () => () => done();
-        io.on('register', (data) => {
-            expect(data).toBe(true);
-            mDone = mDone();
-        });
-
-        io2.on('register', (data) => {
-            expect(data).toBe(true);
-            mDone = mDone();
-        });
-    });
-
-    it('Should have 3 connections', function (done) {
-        const opts = Object.assign({query: 'jwt=' + token}, options);
-
-        io3 = ioClient(`${baseUrl}/notification`, opts);
-
-        io3.on('getConnections', (data) => {
-            expect(data).toBeAn('object');
-            expect(data.socketIds).toBeAn('array');
-            expect(data.socketIds.length).toEqual(3);
-            io.close();
-            io2.close();
-            io3.close();
-            done();
-        });
-
-        io3.on('connect', () => {
-            io3.emit('getConnections');
-        });
-    });
-
-    it('Should have 1 connections', function (done) {
-        const opts = Object.assign({query: 'jwt=' + token}, options);
-
-        io = ioClient(`${baseUrl}/notification` , opts);
-
-        io.on('getConnections', (data) => {
-            expect(data).toBeAn('object');
-            expect(data.socketIds).toBeAn('array');
-            expect(data.socketIds.length).toEqual(1);
-            io.close();
-            done();
-        });
 
         io.on('connect', () => {
-            io.emit('getConnections');
-        });
-    });
-
-    it('Should not register to notification', function (done) {
-        const opts = Object.assign({query: 'jwt='}, options);
-        io = ioClient(`${baseUrl}/notification`, opts);
-
-        io.on('error', (error) => {
-            expect(error).toEqual('[404] Authorization token not found');
+            expect(true).toBe(true);
+            io.close();
             done();
         });
-
-        io.on('connect', function() {
-            io.emit('register');
-        });
     });
 
+    it('Should join user room notification', function (done) {
+        const opts = Object.assign({query: 'jwt=' + token}, options);
+        io = ioClient(`${baseUrl}/notification` , opts);
+
+        io.on('joined', (data) => {
+            expect(data.room).toEqual('room-' + user._id);
+            done();
+        });
+        io.on('connect', () => {
+            io.emit('join');
+        });
+
+        io.on('error', (err) => {
+            done(err);
+        });
+    });
 });
