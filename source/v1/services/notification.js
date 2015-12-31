@@ -1,50 +1,11 @@
-import io from '../config/socketio';
-import redis from '../config/redis';
+import sio from '../config/socketio';
 import Notification from '../models/Notification';
+import socketEmitter from 'socket.io-emitter';
+export const Events = {
+    Shared_Todo_Updated: 'Shared_Todo_Updated'
+};
 
 export class NotificationService {
-
-    static get socketUserHash() {
-        return 'WuSocketUserMap';
-    }
-
-    static get userSocketList() {
-        return 'WuUserSocketList';
-    }
-
-    constructor() {
-        this.redisClient = redis.redis.createClient();
-    }
-
-    /**
-     *
-     * @param userId
-     * @param socketId
-     * @returns {Promise}
-     */
-    register(userId, socketId) {
-        const multi = this.redisClient.multi();
-
-        multi.hset(NotificationService.socketUserHash, socketId, userId);
-        multi.lrem(this.getUserListName(userId), 0, socketId);
-        multi.lpush(this.getUserListName(userId), socketId);
-
-        return multi.execAsync();
-    }
-
-    unRegister(socketId) {
-        return this.redisClient.hgetAsync(NotificationService.socketUserHash, socketId)
-            .then((userId) => {
-                if (userId) {
-                    this.redisClient.lrem(this.getUserListName(userId), 0, socketId);
-                    this.redisClient.hdel(NotificationService.socketUserHash, socketId);
-                }
-            });
-    }
-
-    getConnections(userId) {
-        return this.redisClient.lrangeAsync(this.getUserListName(userId), 0, -1);
-    }
 
     /**
      *
@@ -53,37 +14,35 @@ export class NotificationService {
      * @param {string} event
      */
     async send(userId, notification, event = 'notification') {
-        io.to('room-' + userId).emit(event, notification);
-    }
-
-    getUserListName(userId) {
-        return NotificationService.userSocketList + userId;
+        sio.emitter.of('/notification').in('room-' + userId).emit(event, notification);
     }
 
     /**
      *
      * @param {wu.model.Todo} parentTodo
      * @param {wu.model.Todo} sharedTodo
-     * @returns wu.model.Notification
      */
-    createSharedTodoUpdatedNotification(parentTodo, sharedTodo) {
-        return new Notification({message: 'Shared todo was updated', title: 'Shared todo was updated', meta: {parent: parentTodo.parent, shared: sharedTodo._id}});
+    async notifyTodoUpdate(parentTodo, sharedTodo) {
+        const note = await Notification.create({
+            message: 'Shared todo was updated',
+            title: 'Shared todo was updated',
+            owner: parentTodo.owner,
+            meta: {parent: parentTodo.parent, shared: sharedTodo._id}
+        });
+        await this.send(parentTodo.owner, note, Events.Shared_Todo_Updated);
     }
 
     /**
      *
-     * @returns RedisClient
+     * @param {string} userId
+     * @param {number} limit
+     * @param {string} sort
+     * @returns Array<wu.model.Notification>
      */
-    get redisClient() {
-        return this._redisClient;
-    }
-
-    /**
-     *
-     * @param {RedisClient} value
-     */
-    set redisClient(value) {
-        this._redisClient = value;
+    async getNotifications(userId, limit = 100, sort = '-read') {
+        return await Notification.find({
+            owner: userId
+        }).sort(sort).limit(limit).exec();
     }
 }
 

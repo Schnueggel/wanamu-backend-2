@@ -9,7 +9,6 @@ export const Colors = {
 };
 
 export const todoSchema = new mongoose.Schema({
-
     title: {
         type: String,
         trim: true,
@@ -35,7 +34,8 @@ export const todoSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        index: true
     },
     shared: [mongoose.Schema.Types.ObjectId],
     accepted: {

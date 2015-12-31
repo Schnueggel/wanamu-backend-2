@@ -59,10 +59,7 @@ export class TodoController {
                 }, {new: true}).exec();
 
                 if (parentTodo && parentTodo.finished === false) {
-                    const note = notificationService.createSharedTodoUpdatedNotification(parentTodo, newTodoDoc);
-                    notificationService.send(todoDoc.parent, note);
-                    // We dont wait for saving this notification
-                    note.save();
+                    notificationService.notifyTodoUpdate(parentTodo, newTodoDoc);
                 } else {
                     log.error(`Cant find parent Todo ${parentTodo} `);
                 }
@@ -172,7 +169,7 @@ export class TodoController {
             return;
         }
 
-        if (!todoDoc.owner.equals(ctx.user._id)) {
+        if (!todoDoc.owner.equals(ctx.user._id) && !ctx.user.isAdmin) {
             ctx.status = 403;
             result.error = new errors.AccessDeniedError('Not enough rights to read this todo');
             ctx.body = result;

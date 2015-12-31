@@ -87,21 +87,3 @@ export const setupDb = async function() {
 
     return await BluePromise.resolve(data);
 };
-
-/**
- * Creates a server from v1
- * @param port
- * @param host
- * @param callback
- * @returns {*}
- */
-export const createServer = (port, host='localhost', callback=()=>{}) => {
-    const server = http.createServer();
-    const app = v1.create(server);
-
-    server.on('request', app.callback());
-
-    server.listen(port, host, callback);
-
-    return server;
-};

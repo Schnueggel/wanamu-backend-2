@@ -23,6 +23,11 @@ export const notificationSchema = new mongoose.Schema({
         trim: true,
         required: 'Message is required'
     },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        index: true,
+        required: 'Owner is required'
+    },
     meta: {
         type: mongoose.Schema.Types.Mixed
     },

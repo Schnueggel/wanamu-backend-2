@@ -50,9 +50,19 @@ describe('App Notification', function () {
             expect(data.room).toEqual('room-' + user._id);
             done();
         });
-        io.on('connect', () => {
-            io.emit('join');
+
+        io.on('error', (err) => {
+            done(err);
         });
+    });
+
+    it('Should leave user room notification', function (done) {
+        io.on('left', (data) => {
+            expect(data.room).toEqual('room-' + user._id);
+            done();
+        });
+
+        io.emit('leave');
 
         io.on('error', (err) => {
             done(err);
