@@ -7,16 +7,12 @@ import * as _ from 'lodash';
 export class NotificationController {
 
     async getNotifications(ctx) {
-        const limit = ctx.request.query.limit ? Number(ctx.request.query.limit) : 100;
-        const page = ctx.request.query.page ? Number(ctx.request.query.page) : 1;
-
-        const notes = await notificationService.getNotifications(ctx.user._id, limit, page),
+        const notes = await notificationService.getNotifications(ctx.user._id, ctx.request.query.limit, ctx.request.query.page),
             total = await notificationService.countNotifications(ctx.user._id);
 
-        console.log('total', total, page, limit);
         ctx.body = {
-            page,
-            limit,
+            page: ctx.request.query.page,
+            limit: ctx.request.query.limit,
             total,
             data: notes
         };

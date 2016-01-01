@@ -3,6 +3,7 @@ import Todolist from '../models/Todolist';
 import errors from '../errors';
 import mongoose from 'mongoose';
 import BluePromise from 'bluebird';
+import todoService from '../services/todo';
 
 export class TodolistController {
 
@@ -40,9 +41,10 @@ export class TodolistController {
             return;
         }
 
-        result.data = await Todo.find({
-            todolistId: todolistDoc._id
-        }).exec();
+        result.data = await todoService.getTodos({todolistId:todolistDoc._id}, ctx.request.query.page, ctx.request.query.limit);
+        result.total = await todoService.getTodosCount({todolistId:todolistDoc._id});
+        result.page = ctx.request.query.page;
+        result.limit = ctx.request.query.limit;
 
         ctx.body = result;
     }

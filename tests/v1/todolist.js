@@ -1,12 +1,15 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
+import config from '../../dist/v1/config';
 import { setupDb } from '../../dist/v1/tools/setup';
 
 describe('App Todolist', function () {
     let token,
         cookies,
         user;
+
+    const baseUrl = `http://localhost:${config.WU_PORT}`;
 
     before(function (done) {
         setupDb().then( () => {
@@ -15,7 +18,7 @@ describe('App Todolist', function () {
     });
 
     it('Should not get todos', function (done) {
-        superagent.get('localhost:9999/v1/todolist/0')
+        superagent.get(`${baseUrl}/v1/todolist/0`)
             .type('json')
             .end((err, res) => {
                 expect(res.status).toEqual(401);
@@ -24,7 +27,7 @@ describe('App Todolist', function () {
     });
 
     it('Should login', function (done) {
-        superagent.post('localhost:9999/v1/auth/login')
+        superagent.post(`${baseUrl}/v1/auth/login`)
             .type('json')
             .send({username: 'christian.steinmann.test@gmail.com', password: '12345678'})
             .end((err, res) => {
@@ -37,7 +40,7 @@ describe('App Todolist', function () {
     });
 
     it('Should get todos', function (done) {
-        superagent.get('localhost:9999/v1/todolist/' + user.defaultTodolistId)
+        superagent.get(`${baseUrl}/v1/todolist/${user.defaultTodolistId}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -46,6 +49,25 @@ describe('App Todolist', function () {
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
                 expect(res.body.data[0].title).toEqual('Test todo');
+                expect(res.body.page).toEqual(1);
+                expect(res.body.limit).toEqual(100);
+                expect(res.body.total).toEqual(1);
+                done();
+            });
+    });
+
+    it('Should be out of range', function (done) {
+        superagent.get(`${baseUrl}/v1/todolist/${user.defaultTodolistId}?page=2`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.data.length).toEqual(0);
+                expect(res.body.page).toEqual(2);
+                expect(res.body.limit).toEqual(100);
+                expect(res.body.total).toEqual(1);
                 done();
             });
     });

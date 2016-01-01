@@ -9,6 +9,7 @@ import user from '../controller/User';
 import friend from '../controller/Friend';
 import notification from '../controller/Notification';
 
+import pagination from '../middleware/pagination';
 import authCheck from '../middleware/auth';
 import checkUserId from '../middleware/checkUserId';
 import validObjectId from '../middleware/validObjectId';
@@ -31,7 +32,7 @@ router.post('/register', register.register);
 router.post('/auth/login', auth.login);
 router.post('/auth/logout', authCheck, auth.logout);
 
-router.get('/todolist/:id', authCheck, todolist.getTodos);
+router.get('/todolist/:id', authCheck, pagination, todolist.getTodos);
 
 router.post('/todo/:id', authCheck, todo.createTodo);
 router.put('/todo/:id', authCheck, todo.updateTodo);
@@ -66,6 +67,6 @@ router.delete('/user/:id/friend/:fid', authCheck, checkUserIdMw, validObjectId([
 router.delete('/user/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
 
 
-router.get('/notification', authCheck, notification.getNotifications);
+router.get('/notification', authCheck, pagination, notification.getNotifications);
 
 export default router;
