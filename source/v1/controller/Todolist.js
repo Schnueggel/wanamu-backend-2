@@ -18,13 +18,6 @@ export class TodolistController {
             ctx.params.id = ctx.user.defaultTodolistId;
         }
 
-        if (!mongoose.Types.ObjectId.isValid(ctx.params.id)) {
-            ctx.status = 400;
-            result.error = new errors.RequestDataError('Invalid Todolist param');
-            ctx.body = result;
-            return;
-        }
-
         const todolistDoc = await Todolist.findById(ctx.params.id).exec();
 
         if (!todolistDoc) {

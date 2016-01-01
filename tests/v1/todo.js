@@ -174,7 +174,7 @@ describe('Todo', function () {
 
     it('Should update todo', function (done) {
         superagent.put(`${baseUrl}/v1/todo/${todo._id}`)
-            .send({title: 'New Title'})
+            .send({title: 'New Title!!!'})
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -182,14 +182,13 @@ describe('Todo', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].title).toEqual('New Title');
-
+                expect(res.body.data[0].title).toEqual('New Title!!!');
                 todo = res.body.data[0];
                 done();
             });
     });
 
-    it('Should find todo', function (done) {
+    it('Should find updated todo', function (done) {
         superagent.get(`${baseUrl}/v1/todo/${todo._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
@@ -198,7 +197,18 @@ describe('Todo', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].title).toEqual('New Title');
+                expect(res.body.data[0].title).toEqual('New Title!!!');
+                done();
+            });
+    });
+
+    it('Should not find todo', function (done) {
+        superagent.get(`${baseUrl}/v1/todo/${user._id}`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(404);
                 done();
             });
     });
@@ -212,7 +222,7 @@ describe('Todo', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].title).toEqual('New Title');
+                expect(res.body.data[0].title).toEqual('New Title!!!');
                 done();
             });
     });

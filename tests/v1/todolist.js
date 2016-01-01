@@ -71,4 +71,15 @@ describe('App Todolist', function () {
                 done();
             });
     });
+
+    it('Should be valid todolistId', function (done) {
+        superagent.get(`${baseUrl}/v1/todolist/33`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(400);
+                done();
+            });
+    });
 });

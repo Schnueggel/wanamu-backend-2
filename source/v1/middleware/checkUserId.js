@@ -1,6 +1,7 @@
 import errors from '../errors';
 
 /**
+ * Validates a param against the current user and isAdmin
  * This middleware must be placed after the auth middleware.
  * @returns {Function}
  */

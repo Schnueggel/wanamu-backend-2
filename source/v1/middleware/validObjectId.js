@@ -1,7 +1,10 @@
 import errors from '../errors';
 import mongoose from 'mongoose';
+
 /**
- * This middleware must be placed after the checkAuthId middleware.
+ * Validates mongoose.Types.ObjectIds in the params
+ * @param {Array<string>} [params] list of param names that hold and ObjectId
+ * @param {Array<string>} [body] list of params in the body that hold ObjectIds
  * @returns {Function}
  */
 export default (params = [], body = []) => {

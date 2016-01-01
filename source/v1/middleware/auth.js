@@ -5,6 +5,11 @@ import errors from '../errors';
 import jwt from 'jwt-simple';
 import log from '../config/log';
 
+/**
+ * Validates the jwt token
+ * @param ctx
+ * @param next
+ */
 export default async (ctx, next) => {
     const csrfToken = ctx.cookies.get(Constants.csrfToken);
 
