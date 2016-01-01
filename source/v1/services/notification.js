@@ -1,8 +1,10 @@
 import sio from '../config/socketio';
 import Notification from '../models/Notification';
 import * as socketEmitter from 'socket.io-emitter';
+
 export const Events = {
-    Shared_Todo_Updated: 'Shared_Todo_Updated'
+    Shared_Todo_Updated: 'Shared_Todo_Updated',
+    Shared_Todo_Accepted: 'Shared_Todo_Accepted'
 };
 
 export class NotificationService {
@@ -27,10 +29,26 @@ export class NotificationService {
             message: 'Shared todo was updated',
             title: 'Shared todo was updated',
             owner: parentTodo.owner,
-            meta: {parent: parentTodo.parent, shared: sharedTodo._id}
+            meta: {parent: parentTodo._id, shared: sharedTodo._id}
         });
 
         await this.send(parentTodo.owner, note, Events.Shared_Todo_Updated);
+    }
+
+    /**
+     * Sends a notification to the shared todo owner that the todo is accepted
+     * @param {wu.model.Todo} parentTodo
+     * @param {wu.model.Todo} acceptedTodo
+     */
+    async notifyTodoAccepted(parentTodo, acceptedTodo) {
+        const note = await Notification.create({
+            message: 'Shared todo was accepted',
+            title: 'Shared todo was accepted',
+            owner: parentTodo.owner,
+            meta: {parent: parentTodo._id, shared: acceptedTodo._id}
+        });
+
+        await this.send(parentTodo.owner, note, Events.Shared_Todo_Accepted);
     }
 
     /**

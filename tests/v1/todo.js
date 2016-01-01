@@ -129,6 +129,32 @@ describe('Todo', function () {
             });
     });
 
+    it('Should accept shared todo', function (done) {
+        const opts = Object.assign({query: 'jwt=' + token}, {
+                transports: ['websocket'],
+                'force new connection': true
+            }),
+            io = ioClient(`${baseUrl}/notification`, opts);
+
+        io.on(NotifyEvents.Shared_Todo_Accepted, (data) => {
+            expect(data.owner).toEqual(user._id);
+            done();
+        });
+
+        io.on('connect', () => {
+            superagent.put(`${baseUrl}/v1/todo/${todo2._id}/accept`)
+                .set('Cookie', cookies2)
+                .set('Authorization', `Bearer ${token2}`)
+                .type('json')
+                .end((err, res) => {
+                    expect(res.status).toEqual(200);
+                    expect(res.body.data).toBeAn('array');
+                    expect(res.body.data.length).toEqual(1);
+                    expect(res.body.data[0].accepted).toEqual(true);
+                });
+        });
+    });
+
     it('Should finish shared todo', function (done) {
         const opts = Object.assign({query: 'jwt=' + token}, {
                 transports: ['websocket'],
@@ -157,7 +183,7 @@ describe('Todo', function () {
     });
 
     it('Should unshare todo', function (done) {
-        superagent.post(`${baseUrl}/v1/todo/${todo._id}/unshare/${user2._id}`)
+        superagent.put(`${baseUrl}/v1/todo/${todo._id}/unshare/${user2._id}`)
             .send({})
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)

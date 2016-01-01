@@ -40,8 +40,9 @@ router.post('/todo/:id', authCheck, validId, todo.createTodo);
 router.put('/todo/:id', authCheck, validId, checkTodo, todo.updateTodo);
 router.delete('/todo/:id', authCheck, validId, checkTodo,  todo.deleteTodo);
 router.get('/todo/:id', authCheck, validId, checkTodo, todo.getTodo);
-router.post('/todo/:id/share', authCheck, validId, checkTodo, todo.share);
-router.post('/todo/:id/unshare/:uid', authCheck, validId, checkTodo, todo.unShare);
+router.post('/todo/:id/share', authCheck, validId, checkTodo, todo.shareTodo);
+router.put('/todo/:id/accept', authCheck, validId, checkTodo, todo.acceptTodo);
+router.put('/todo/:id/unshare/:uid', authCheck, validId, checkTodo, todo.unShareTodo);
 
 router.delete('/user/:id', authCheck, checkUserIdMw, user.deleteUser);
 router.delete('/user', authCheck, checkUserIdMw, user.deleteUser);
