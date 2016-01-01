@@ -162,14 +162,13 @@ describe('Todo', function () {
             }),
             io = ioClient(`${baseUrl}/notification`, opts);
 
-        io.on(NotifyEvents.Shared_Todo_Updated, (data) => {
+        io.on(NotifyEvents.Shared_Todo_Finished, (data) => {
             expect(data.owner).toEqual(user._id);
             done();
         });
 
         io.on('connect', () => {
-            superagent.put(`${baseUrl}/v1/todo/${todo2._id}`)
-                .send({finished: true})
+            superagent.put(`${baseUrl}/v1/todo/${todo2._id}/finish`)
                 .set('Cookie', cookies2)
                 .set('Authorization', `Bearer ${token2}`)
                 .type('json')

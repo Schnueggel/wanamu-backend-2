@@ -31,28 +31,51 @@ export class TodoController {
         try {
             const newTodoDoc = await todoDoc.save();
 
-            if (todoDoc.parent && finished !== newTodoDoc.finished) {
-                let operation = '$addToSet';
-
-                if (!todoDoc.finished) {
-                    operation = '$pull';
-                }
-
-                const parentTodo = await Todo.findByIdAndUpdate(todoDoc.parent,{
-                    [operation]: {
-                        finishedChilds: todoDoc._id
-                    }
-                }, {new: true}).exec();
-
-                if (parentTodo && parentTodo.finished === false) {
-                    notificationService.notifyTodoUpdate(parentTodo, newTodoDoc);
-                } else {
-                    log.error(`Cant find parent Todo ${parentTodo} `);
-                }
-            }
             result.data = [newTodoDoc.toJSON()];
         } catch(err) {
             log.error(err);
+            if (err instanceof mongoose.Error.ValidationError) {
+                result.error = errors.ValidationError.fromMongooseValidationError(err);
+                ctx.status = 422;
+            } else {
+                result.error = new Error(err.message);
+                ctx.status = 500;
+            }
+        }
+
+        ctx.body = result;
+    }
+
+    /**
+     * ctx: {
+     *    params: {
+     *       todo: <wu.model.Todo>
+     *    }
+     * }
+     * @param {object} ctx
+     */
+    async finishTodo(ctx) {
+        const result = {};
+
+        const todoDoc = ctx.params.todo;
+
+        todoDoc.finished = true;
+
+        try {
+            const newTodoDoc = await todoDoc.save();
+
+            if (todoDoc.parent) {
+                const parentTodo = await Todo.findById(todoDoc.parent).exec();
+
+                if (parentTodo) {
+                    notificationService.notifyTodoFinished(parentTodo, newTodoDoc);
+                }
+            }
+
+            result.data = [newTodoDoc.toJSON()];
+        } catch(err) {
+            log.error(err);
+
             if (err instanceof mongoose.Error.ValidationError) {
                 result.error = errors.ValidationError.fromMongooseValidationError(err);
                 ctx.status = 422;

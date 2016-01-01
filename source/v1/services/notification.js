@@ -3,7 +3,7 @@ import Notification from '../models/Notification';
 import * as socketEmitter from 'socket.io-emitter';
 
 export const Events = {
-    Shared_Todo_Updated: 'Shared_Todo_Updated',
+    Shared_Todo_Finished: 'Shared_Todo_Updated',
     Shared_Todo_Accepted: 'Shared_Todo_Accepted'
 };
 
@@ -24,15 +24,15 @@ export class NotificationService {
      * @param {wu.model.Todo} parentTodo
      * @param {wu.model.Todo} sharedTodo
      */
-    async notifyTodoUpdate(parentTodo, sharedTodo) {
+    async notifyTodoFinished(parentTodo, sharedTodo) {
         const note = await Notification.create({
-            message: 'Shared todo was updated',
-            title: 'Shared todo was updated',
+            message: 'Shared todo was finished',
+            title: 'Shared todo was finished',
             owner: parentTodo.owner,
             meta: {parent: parentTodo._id, shared: sharedTodo._id}
         });
 
-        await this.send(parentTodo.owner, note, Events.Shared_Todo_Updated);
+        await this.send(parentTodo.owner, note, Events.Shared_Todo_Finished);
     }
 
     /**
