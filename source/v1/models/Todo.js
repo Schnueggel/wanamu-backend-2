@@ -46,7 +46,6 @@ export const todoSchema = new mongoose.Schema({
         type: Number,
         default: 1
     },
-    finishedChilds: [mongoose.Schema.Types.ObjectId],
     todolistId: {
         type: mongoose.Schema.Types.ObjectId,
         index: true,

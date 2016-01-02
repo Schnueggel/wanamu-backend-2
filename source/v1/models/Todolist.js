@@ -8,8 +8,7 @@ export const todolistSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId
-    },
-    todos: [mongoose.Schema.Types.ObjectId]
+    }
 }, { timestamps: true });
 
 const Model = mongoose.model('Todolist', todolistSchema);
