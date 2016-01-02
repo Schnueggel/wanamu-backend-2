@@ -77,35 +77,29 @@ export const setupDb = async function (dbPostFix = '') {
 
     //Create Todos
 
-    const todoDoc = await Todo.create({
+    data.todoDoc1 = await Todo.create({
         title: 'Test todo',
         description: 'Test description',
         owner: data.userDoc1._id,
         todolistId: data.userDoc1.defaultTodolistId
     });
 
-    const todoDoc2 = await Todo.create({
-        title: todoDoc.title,
-        description: todoDoc.description,
+    data.todoDoc2 = await Todo.create({
+        title: data.todoDoc1.title,
+        description: data.todoDoc1.description,
         owner: data.userDoc2._id,
         todolistId: data.userDoc2.defaultTodolistId,
         accepted: true,
-        parent: todoDoc._id
+        parent: data.todoDoc1._id
     });
 
-    await Todo.update({_id: todoDoc._id}, {
+    data.todoDoc1 = await Todo.findByIdAndUpdate(data.todoDoc1._id, {
         $addToSet: {
-            shared: todoDoc2._id
+            shared: data.todoDoc2._id
         }
-    });
+    }, {new: true}).exec();
 
     await Todo.ensureIndexes();
-
-    await User.update({_id: data.userDoc1._id, 'todolists._id': data.userDoc1.defaultTodolistId}, {
-        $addToSet: {
-            'todolists.$.todos': todoDoc._id
-        }
-    });
 
     // Create notifications
 

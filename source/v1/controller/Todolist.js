@@ -1,14 +1,20 @@
 import Todo from '../models/Todo';
 import Todolist from '../models/Todolist';
+import User from '../models/User';
 import errors from '../errors';
 import mongoose from 'mongoose';
 import BluePromise from 'bluebird';
 import todoService from '../services/todo';
+import * as _ from 'lodash';
 
 export class TodolistController {
 
     /**
-     *
+     * ctx: {
+     *    params: {
+     *       id: Mongoose.Types.ObjectId
+     *    }
+     * }
      * @param ctx
      */
     async getTodos(ctx) {
@@ -34,7 +40,9 @@ export class TodolistController {
             return;
         }
 
-        result.data = await todoService.getTodos({todolistId:todolistDoc._id}, ctx.request.query.page, ctx.request.query.limit);
+        const todos = await todoService.getTodos({todolistId:todolistDoc._id}, ctx.request.query.page, ctx.request.query.limit);
+
+        result.data = todos;
         result.total = await todoService.getTodosCount({todolistId:todolistDoc._id});
         result.page = ctx.request.query.page;
         result.limit = ctx.request.query.limit;

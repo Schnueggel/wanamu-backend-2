@@ -9,6 +9,9 @@ import notificationService from '../services/notification';
 import Notification from '../models/Notification';
 import log from '../config/log';
 
+/**
+ *
+ */
 export class TodoController {
 
     /**

@@ -7,12 +7,14 @@ import { setupDb } from '../../dist/v1/tools/setup';
 describe('App Todolist', function () {
     let token,
         cookies,
+        dbData,
         user;
 
     const baseUrl = `http://localhost:${config.WU_PORT}`;
 
     before(function (done) {
-        setupDb().then( () => {
+        setupDb().then( (data) => {
+            dbData = data;
             done();
         }).catch(done);
     });
@@ -52,6 +54,12 @@ describe('App Todolist', function () {
                 expect(res.body.page).toEqual(1);
                 expect(res.body.limit).toEqual(100);
                 expect(res.body.total).toEqual(1);
+                expect(res.body.data[0].sharedInfo).toBeAn('object');
+                expect(res.body.data[0].sharedInfo.acceptedCount).toEqual(1);
+                expect(res.body.data[0].sharedInfo.finishedCount).toEqual(0);
+                expect(res.body.data[0].sharedInfo.info).toBeAn('array');
+                expect(res.body.data[0].sharedInfo.info.length).toEqual(1);
+                expect(res.body.data[0].sharedInfo.info[0].username).toEqual(dbData.userDoc2.username);
                 done();
             });
     });
