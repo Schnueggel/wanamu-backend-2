@@ -2,12 +2,17 @@
 import superagent from 'superagent';
 import expect from 'expect';
 import { setupDb} from '../../dist/v1/tools/setup';
+import ioClient from 'socket.io-client';
+import config from '../../dist/v1/config';
+import {Events as NotifyEvents} from '../../dist/v1/services/notification';
 
 describe('User', function () {
     let token,token2, token3,
         cookies, cookies2, cookies3,
         dbData,
         user, user2, user3;
+
+    const baseUrl = `http://localhost:${config.WU_PORT}`;
 
     before(function (done) {
         setupDb().then((data) => {
@@ -17,7 +22,7 @@ describe('User', function () {
     });
 
     it('Should login', function (done) {
-        superagent.post('localhost:9999/v1/auth/login')
+        superagent.post(`${baseUrl}/v1/auth/login`)
             .type('json')
             .send({username: 'user1', password: '12345678'})
             .end((err, res) => {
@@ -32,7 +37,7 @@ describe('User', function () {
     });
 
     it('Should find user', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user._id}`)
+        superagent.get(`${baseUrl}/v1/user/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -49,7 +54,7 @@ describe('User', function () {
     });
 
     it('Should invite friend', function (done) {
-        superagent.post(`localhost:9999/v1/user/${user._id}/friend`)
+        superagent.post(`${baseUrl}/v1/user/${user._id}/friend`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -61,7 +66,7 @@ describe('User', function () {
     });
 
     it('Should login user 3', function (done) {
-        superagent.post('localhost:9999/v1/auth/login')
+        superagent.post(`${baseUrl}/v1/auth/login`)
             .type('json')
             .send({username: 'user3', password: '12345678'})
             .end((err, res) => {
@@ -76,19 +81,32 @@ describe('User', function () {
     });
 
     it('Should accept friend', function (done) {
-        superagent.post(`localhost:9999/v1/user/friend/accept`)
+        const opts = Object.assign({query: 'jwt=' + token3}, {
+                transports: ['websocket'],
+                'force new connection': true
+            }),
+            io = ioClient(`${baseUrl}/notification`, opts);
+
+        io.on(NotifyEvents.Friend_Accepted, (data) => {
+            expect(data.meta._id).toEqual(dbData.userDoc1._id.toString());
+            expect(data.meta.username).toEqual(dbData.userDoc1.username);
+            expect(data.meta.firstname).toEqual(dbData.userDoc1.firstname);
+            expect(data.meta.lastname).toEqual(dbData.userDoc1.lastname);
+            done();
+        });
+
+        superagent.post(`${baseUrl}/v1/user/friend/accept`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
             .send({fid: dbData.userDoc1._id})
             .end((err, res) => {
                 expect(res.status).toEqual(200);
-                done();
             });
     });
 
     it('Should find user with new friend', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user._id}`)
+        superagent.get(`${baseUrl}/v1/user/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -106,7 +124,7 @@ describe('User', function () {
     });
 
     it('Should login user 2', function (done) {
-        superagent.post('localhost:9999/v1/auth/login')
+        superagent.post(`${baseUrl}/v1/auth/login`)
             .type('json')
             .send({username: 'user2', password: '12345678'})
             .end((err, res) => {
@@ -121,7 +139,7 @@ describe('User', function () {
     });
 
     it('Should invite friend 2', function (done) {
-        superagent.post(`localhost:9999/v1/user/${user3._id}/friend`)
+        superagent.post(`${baseUrl}/v1/user/${user3._id}/friend`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
@@ -133,7 +151,7 @@ describe('User', function () {
     });
 
     it('Should get friends pending', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user3._id}/friend`)
+        superagent.get(`${baseUrl}/v1/user/${user3._id}/friend`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
@@ -151,7 +169,7 @@ describe('User', function () {
     });
 
     it('Should get friends invitation', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user2._id}/friend`)
+        superagent.get(`${baseUrl}/v1/user/${user2._id}/friend`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -169,7 +187,7 @@ describe('User', function () {
     });
 
     it('Should decline friend', function (done) {
-        superagent.post(`localhost:9999/v1/user/friend/decline`)
+        superagent.post(`${baseUrl}/v1/user/friend/decline`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -181,7 +199,7 @@ describe('User', function () {
     });
 
     it('Should get friends with no more invitation', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user2._id}/friend`)
+        superagent.get(`${baseUrl}/v1/user/${user2._id}/friend`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -198,7 +216,7 @@ describe('User', function () {
     });
 
     it('Should get friends with no pending', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user3._id}/friend`)
+        superagent.get(`${baseUrl}/v1/user/${user3._id}/friend`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
@@ -215,7 +233,7 @@ describe('User', function () {
     });
 
     it('Should get friends', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user._id}/friend`)
+        superagent.get(`${baseUrl}/v1/user/${user._id}/friend`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -230,7 +248,7 @@ describe('User', function () {
     });
 
     it('Should delete friends', function (done) {
-        superagent.delete(`localhost:9999/v1/user/${user._id}/friend/${user2._id}`)
+        superagent.delete(`${baseUrl}/v1/user/${user._id}/friend/${user2._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -241,7 +259,7 @@ describe('User', function () {
     });
 
     it('Should get friends without deleted friend', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user._id}/friend`)
+        superagent.get(`${baseUrl}/v1/user/${user._id}/friend`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -256,7 +274,7 @@ describe('User', function () {
     });
 
     it('Should ignore user', function (done) {
-        superagent.post(`localhost:9999/v1/user/${user._id}/ignore`)
+        superagent.post(`${baseUrl}/v1/user/${user._id}/ignore`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -268,7 +286,7 @@ describe('User', function () {
     });
 
     it('Should not be friends anymore', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user._id}`)
+        superagent.get(`${baseUrl}/v1/user/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -282,7 +300,7 @@ describe('User', function () {
     });
 
     it('Should have friend removed', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user2._id}`)
+        superagent.get(`${baseUrl}/v1/user/${user2._id}`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -296,7 +314,7 @@ describe('User', function () {
     });
 
     it('Should not allow friend invitation', function (done) {
-        superagent.post(`localhost:9999/v1/user/${user2._id}/friend`)
+        superagent.post(`${baseUrl}/v1/user/${user2._id}/friend`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -308,7 +326,7 @@ describe('User', function () {
     });
 
     it('Should delete user', function (done) {
-        superagent.delete(`localhost:9999/v1/user/${user._id}`)
+        superagent.delete(`${baseUrl}/v1/user/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -319,7 +337,7 @@ describe('User', function () {
     });
 
     it('Should not find user', function (done) {
-        superagent.get(`localhost:9999/v1/user/${user._id}`)
+        superagent.get(`${baseUrl}/v1/user/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -330,7 +348,7 @@ describe('User', function () {
     });
 
     it('Should login as admin', function (done) {
-        superagent.post('localhost:9999/v1/auth/login')
+        superagent.post(`${baseUrl}/v1/auth/login`)
             .type('json')
             .send({username: 'user3', password: '12345678'})
             .end((err, res) => {
@@ -343,7 +361,7 @@ describe('User', function () {
     });
 
     it('Should delete user by admin', function (done) {
-        superagent.delete(`localhost:9999/v1/user/${dbData.userDoc2._id}`)
+        superagent.delete(`${baseUrl}/v1/user/${dbData.userDoc2._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -357,7 +375,7 @@ describe('User', function () {
     });
 
     it('Should not find user deleted by admin', function (done) {
-        superagent.get(`localhost:9999/v1/user/${dbData.userDoc2._id}`)
+        superagent.get(`${baseUrl}/v1/user/${dbData.userDoc2._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
