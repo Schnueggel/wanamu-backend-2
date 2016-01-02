@@ -19,7 +19,7 @@ import v1 from '../v1';
  * Db Setup
  * @returns {*|string|Promise.<{}>}
  */
-export const setupDb = async function(dbPostFix='') {
+export const setupDb = async function (dbPostFix = '') {
 
     console.log('Start Db Setup');
     await mongo.open(dbPostFix);
@@ -60,22 +60,43 @@ export const setupDb = async function(dbPostFix='') {
         email: 'christian.steinmann.test3@gmail.com'
     });
 
-    data.userDoc1 = await User.findByIdAndUpdate(data.userDoc1._id, { $addToSet: {
-        friends: data.userDoc2._id
-    }}, {new: true}).exec();
+    data.userDoc1 = await User.findByIdAndUpdate(data.userDoc1._id, {
+        $addToSet: {
+            friends: data.userDoc2._id
+        }
+    }, {new: true}).exec();
 
-    data.userDoc2 = await User.findByIdAndUpdate(data.userDoc2._id, { $addToSet: {
-        friends: data.userDoc1._id
-    }}, {new: true}).exec();
+    data.userDoc2 = await User.findByIdAndUpdate(data.userDoc2._id, {
+        $addToSet: {
+            friends: data.userDoc1._id
+        }
+    }, {new: true}).exec();
 
     // Wait for indexes to be created because this users are the first ones after drop
     await User.ensureIndexes();
+
+    //Create Todos
 
     const todoDoc = await Todo.create({
         title: 'Test todo',
         description: 'Test description',
         owner: data.userDoc1._id,
         todolistId: data.userDoc1.defaultTodolistId
+    });
+
+    const todoDoc2 = await Todo.create({
+        title: todoDoc.title,
+        description: todoDoc.description,
+        owner: data.userDoc2._id,
+        todolistId: data.userDoc2.defaultTodolistId,
+        accepted: true,
+        parent: todoDoc._id
+    });
+
+    await Todo.update({_id: todoDoc._id}, {
+        $addToSet: {
+            shared: todoDoc2._id
+        }
     });
 
     await Todo.ensureIndexes();
@@ -86,9 +107,11 @@ export const setupDb = async function(dbPostFix='') {
         }
     });
 
+    // Create notifications
+
     let notes = [];
 
-    for(let i = 0; i < 53; i++) {
+    for (let i = 0; i < 53; i++) {
         notes.push({
             title: 'Notification',
             message: 'Message',
@@ -106,6 +129,8 @@ export const setupDb = async function(dbPostFix='') {
             }
         });
     });
+
+    await Notification.ensureIndexes();
 
     return await BluePromise.resolve(data);
 };
