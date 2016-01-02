@@ -26,7 +26,7 @@ export class TodoService {
         const todos = await Todo.find(conditions).sort(sort).limit(limit).skip((page - 1) * limit).exec();
         const sharedInfo = await this.getTodosShareInfo(todos.map(v => v._id ));
 
-        const newTodos = todos.map( v => v.toJSON()).map( v => {console.log(sharedInfo[v._id]);
+        const newTodos = todos.map( v => v.toJSON()).map( v => {
             v.sharedInfo = sharedInfo[v._id];
             return v;
         });

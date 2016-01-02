@@ -1,8 +1,8 @@
 import User from '../models/User';
 import errors from '../errors';
 import mongoose from 'mongoose';
-import * as _ from 'lodash';
 import userService from '../services/user';
+import notificationService from '../services/notification';
 
 export class FriendController {
 
@@ -30,8 +30,13 @@ export class FriendController {
 
         if (ctx.user._id.equals(ctx.params.id)) {
             userDoc = ctx.user;
-        } else {
+        } else if (ctx.user.isAdmin) {
             userDoc = await User.findById(ctx.params.id).exec();
+        } else {
+            ctx.status = 403;
+            result.error = new errors.AccessDeniedError('You are not allowed to make friends for other users');
+            ctx.body = result;
+            return;
         }
 
         if (!userDoc) {
@@ -92,6 +97,22 @@ export class FriendController {
         const result = {},
             fid = ctx.request.body.fid;
 
+        const friendDoc = await User.findById(fid).exec();
+
+        if (!friendDoc) {
+            ctx.status = 404;
+            result.error = new errors.NotFoundError('Friend not found');
+            ctx.body = result;
+            return;
+        }
+
+        if (friendDoc.friends.indexOf(ctx.params.id) === -1) {
+            ctx.status = 403;
+            result.error = new errors.AccessDeniedError('You have no invitation to accept from this user');
+            ctx.body = result;
+            return;
+        }
+
         const userDoc = await User.findByIdAndUpdate(ctx.params.id, {
             $addToSet: {
                 friends: fid
@@ -102,7 +123,7 @@ export class FriendController {
             ctx.status = 404;
             result.error = new errors.NotFoundError('User not found');
         } else {
-            //TODO send notification
+            notificationService.notifyFriendAccepted(userDoc, friendDoc);
         }
 
         ctx.body = result;
