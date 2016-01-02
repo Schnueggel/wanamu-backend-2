@@ -112,6 +112,18 @@ userSchema.pre('save', async function (next) {
     }
 });
 
-const Model = mongoose.model('User', userSchema);
+/**
+ * @namespace wu.model
+ */
 
-export default Model;
+/**
+ *
+ * @name User
+ * @extends Mongoose.Model
+ * @augments userSchema
+ * @memberOf wu.model
+ * @property {Mongoose.Types.ObjectId} _id
+ * @property {Mongoose.Types.ObjectId} owner
+ */
+export default mongoose.model('User', userSchema);
+

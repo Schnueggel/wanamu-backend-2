@@ -15,7 +15,7 @@ export class TodolistController {
      *       id: Mongoose.Types.ObjectId
      *    }
      * }
-     * @param ctx
+     * @param {object} ctx
      */
     async getTodos(ctx) {
         const result = {};
@@ -40,9 +40,7 @@ export class TodolistController {
             return;
         }
 
-        const todos = await todoService.getTodos({todolistId:todolistDoc._id}, ctx.request.query.page, ctx.request.query.limit);
-
-        result.data = todos;
+        result.data = await todoService.getTodos({todolistId:todolistDoc._id}, ctx.request.query.page, ctx.request.query.limit);
         result.total = await todoService.getTodosCount({todolistId:todolistDoc._id});
         result.page = ctx.request.query.page;
         result.limit = ctx.request.query.limit;

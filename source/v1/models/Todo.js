@@ -66,6 +66,4 @@ export const todoSchema = new mongoose.Schema({
  * @property {Mongoose.Types.ObjectId} _id
  * @property {Mongoose.Types.ObjectId} owner
  */
-const Model = mongoose.model('Todo', todoSchema);
-
-export default Model;
+export default mongoose.model('Todo', todoSchema);

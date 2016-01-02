@@ -115,13 +115,11 @@ export class TodoService {
             if (sharedInfoMap[v.parent]) {
                 sharedInfoMap[v.parent].info.push(v);
             } else {
-                const info = {
+                sharedInfoMap[v.parent] = {
                     acceptedCount: 0,
                     finishedCount: 0,
                     info: [v]
                 };
-
-                sharedInfoMap[v.parent] = info;
             }
 
             if (v.accepted) sharedInfoMap[v.parent].acceptedCount += 1;

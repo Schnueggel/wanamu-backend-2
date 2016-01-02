@@ -11,6 +11,19 @@ export const todolistSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const Model = mongoose.model('Todolist', todolistSchema);
+/**
+ * @namespace wu.model
+ */
 
-export default Model;
+/**
+ *
+ * @name Todolist
+ * @extends Mongoose.Model
+ * @augments todolistSchema
+ * @memberOf wu.model
+ * @property {Mongoose.Types.ObjectId} _id
+ * @property {Mongoose.Types.ObjectId} owner
+ */
+const TodolistModel = mongoose.model('Todolist', todolistSchema);
+
+export default TodolistModel;
