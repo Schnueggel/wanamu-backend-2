@@ -121,10 +121,10 @@ describe('Todo', function () {
             .end((err, res) => {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
-                expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].owner).toEqual(user2._id.toString());
-                expect(res.body.data[0].parent).toEqual(todo._id.toString());
-                todo2 = res.body.data[0];
+                expect(res.body.data.length).toEqual(2);
+                expect(res.body.data[1].owner).toEqual(user2._id.toString());
+                expect(res.body.data[1].parent).toEqual(todo._id.toString());
+                todo2 = res.body.data[1];
                 done();
             });
     });
