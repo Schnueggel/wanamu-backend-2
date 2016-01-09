@@ -15,7 +15,6 @@ import checkUserId from '../middleware/checkUserId';
 import validObjectId from '../middleware/validObjectId';
 import checkTodo from '../middleware/checkTodo';
 
-
 const checkUserIdMw = checkUserId();
 
 const validObjectIdUsrFrMw = validObjectId(['id'],['fid']);

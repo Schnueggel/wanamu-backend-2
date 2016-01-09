@@ -10,6 +10,7 @@ import routesIO from './config/routes.io';
 import config from './config';
 import http from 'http';
 import log from './config/log';
+import cors from './middleware/cors';
 
 const v1 = {
     create(server){
@@ -18,8 +19,8 @@ const v1 = {
         mongo.open();
 
         app.use(bodyParser())
-            .use(router.routes())
-            .use(router.allowedMethods());
+            .use(cors())
+            .use(router.routes());
 
         routesIO(io.create(server));
 
