@@ -19,7 +19,7 @@ const v1 = {
         mongo.open();
 
         app.use(bodyParser())
-            .use(cors())
+            .use(cors({credentials: true}))
             .use(router.routes());
 
         routesIO(io.create(server));
