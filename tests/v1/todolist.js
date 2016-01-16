@@ -49,11 +49,11 @@ describe('App Todolist', function () {
             .end((err, res) => {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
-                expect(res.body.data.length).toEqual(1);
+                expect(res.body.data.length).toEqual(2);
                 expect(res.body.data[0].title).toEqual('Test todo');
                 expect(res.body.page).toEqual(1);
                 expect(res.body.limit).toEqual(100);
-                expect(res.body.total).toEqual(1);
+                expect(res.body.total).toEqual(2);
                 expect(res.body.data[0].sharedInfo).toBeAn('object');
                 expect(res.body.data[0].sharedInfo.acceptedCount).toEqual(1);
                 expect(res.body.data[0].sharedInfo.finishedCount).toEqual(0);
@@ -75,7 +75,7 @@ describe('App Todolist', function () {
                 expect(res.body.data.length).toEqual(0);
                 expect(res.body.page).toEqual(2);
                 expect(res.body.limit).toEqual(100);
-                expect(res.body.total).toEqual(1);
+                expect(res.body.total).toEqual(2);
                 done();
             });
     });

@@ -93,6 +93,14 @@ export const setupDb = async function (dbPostFix = '') {
         parent: data.todoDoc1._id
     });
 
+    data.todoDoc3 = await Todo.create({
+        title: 'Test Todo 2',
+        description: 'Test Description 2',
+        owner: data.userDoc1._id,
+        todolistId: data.userDoc1.defaultTodolistId,
+        accepted: false
+    });
+
     data.todoDoc1 = await Todo.findByIdAndUpdate(data.todoDoc1._id, {
         $addToSet: {
             shared: data.todoDoc2._id
