@@ -28,7 +28,7 @@ export const userSchema = new mongoose.Schema({
             message: 'Invalid salutation {VALUE}'
         }
     },
-    username: { //Username should also stored in lowercase with unique index to make case insensitive search easy but guarantee uniqueness
+    username: { //TODO Username should also stored in lowercase with unique index to make case insensitive search easy but guarantee uniqueness
         type: String,
         index: {unique: true},
         unique: true,

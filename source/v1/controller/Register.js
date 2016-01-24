@@ -17,7 +17,7 @@ export class RegisterController {
                 ctx.status = 422;
             } else if (err.code === 11000) {
                 result.error = errors.ValidationError.fromMongoDuplicateError(err);
-                ctx.status = 422;
+                ctx.status = 477;
             } else {
                 result.error = new Error(err.message);
                 ctx.status = 500;
