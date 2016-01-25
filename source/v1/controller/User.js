@@ -88,6 +88,26 @@ export class UserController {
 
         ctx.body = result;
     }
+
+    /**
+     *
+     * @param ctx
+     */
+    async userNameCheck(ctx) {
+        let data = false;
+        if (typeof ctx.params.username === 'string') {
+            const user = await User.find({
+                username: ctx.params.username
+            });
+            if (user) {
+                data = true;
+            }
+        }
+
+        ctx.body = {
+            data
+        };
+    }
 }
 
 export default new UserController();

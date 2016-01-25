@@ -6,8 +6,7 @@ import * as _ from 'lodash';
 export class RegisterController {
 
     async register(ctx) {
-        const result = {};
-
+        const result = {};console.log('hund');
         try {
             const userDoc = await userService.createUser(_.pick(ctx.request.body, ['firstname', 'lastname', 'salutation', 'email', 'password', 'avatar', 'username']));
             result.data = [userDoc];
@@ -17,9 +16,10 @@ export class RegisterController {
                 ctx.status = 422;
             } else if (err.code === 11000) {
                 result.error = errors.ValidationError.fromMongoDuplicateError(err);
-                ctx.status = 477;
+                ctx.status = 422;
             } else {
-                result.error = new Error(err.message);
+                console.error(err);
+                result.error = err.message;
                 ctx.status = 500;
             }
         }

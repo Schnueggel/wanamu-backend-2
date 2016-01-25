@@ -52,6 +52,7 @@ router.get('/user', authCheck, checkUserIdMw, user.getUser);
 
 router.post('/user/:id/ignore', authCheck, checkUserIdMw, validObjectId(['id'],['id']), user.ignoreUser);
 router.post('/user/ignore', authCheck, checkUserIdMw, validObjectId(['id'], ['id']), user.ignoreUser);
+router.get('/user/username/:username', user.userNameCheck);
 
 //Friends
 router.post('/user/:id/friend', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.inviteFriend);
@@ -68,7 +69,6 @@ router.post('/user/friend/decline', authCheck, checkUserIdMw, validObjectIdUsrFr
 
 router.delete('/user/:id/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
 router.delete('/user/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
-
 
 router.get('/notification', authCheck, pagination, notification.getNotifications);
 

@@ -384,4 +384,14 @@ describe('User', function () {
                 done();
             });
     });
+
+    it('Should check username', function (done) {
+        superagent.get(`${baseUrl}/v1/user/username/user1`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toEqual(true);
+                done();
+            });
+    });
 });
