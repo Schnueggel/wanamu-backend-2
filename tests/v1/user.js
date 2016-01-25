@@ -36,6 +36,27 @@ describe('User', function () {
             });
     });
 
+
+    it('Should check username with true', function (done) {
+        superagent.get(`${baseUrl}/v1/user/username/user1`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toEqual(true);
+                done();
+            });
+    });
+
+    it('Should check username with false', function (done) {
+        superagent.get(`${baseUrl}/v1/user/username/hhhh`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toEqual(false);
+                done();
+            });
+    });
+
     it('Should find user', function (done) {
         superagent.get(`${baseUrl}/v1/user/${user._id}`)
             .set('Cookie', cookies)
@@ -381,16 +402,6 @@ describe('User', function () {
             .type('json')
             .end((err, res) => {
                 expect(res.status).toEqual(404);
-                done();
-            });
-    });
-
-    it('Should check username', function (done) {
-        superagent.get(`${baseUrl}/v1/user/username/user1`)
-            .type('json')
-            .end((err, res) => {
-                expect(res.status).toEqual(200);
-                expect(res.body.data).toEqual(true);
                 done();
             });
     });

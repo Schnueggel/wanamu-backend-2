@@ -96,9 +96,10 @@ export class UserController {
     async userNameCheck(ctx) {
         let data = false;
         if (typeof ctx.params.username === 'string') {
-            const user = await User.find({
+            const user = await User.findOne({
                 username: ctx.params.username
-            });
+            }).exec();
+
             if (user) {
                 data = true;
             }

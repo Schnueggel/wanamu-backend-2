@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 export class RegisterController {
 
     async register(ctx) {
-        const result = {};console.log('hund');
+        const result = {};
         try {
             const userDoc = await userService.createUser(_.pick(ctx.request.body, ['firstname', 'lastname', 'salutation', 'email', 'password', 'avatar', 'username']));
             result.data = [userDoc];
