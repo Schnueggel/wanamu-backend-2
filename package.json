@@ -15,7 +15,7 @@
     "build": "rm -rf dist && \"./node_modules/.bin/\"babel source --out-dir dist --source-maps --extends .babelrc",
     "build-watch": "rm -rf dist && npm run build -- -w",
     "build-run": "npm run build && node dist/index.js",
-    "run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --name=\"api\"",
+    "dev-run-watch": "source ./bin/env-test.sh && ./node_modules/.bin/pm2 start dist/index.js --watch --name=\"api\"",
     "start": "./node_modules/.bin/pm2 start dist/index.js --name=\"api\"",
     "stop": "./node_modules/.bin/pm2 delete api",
     "pm": "./node_modules/.bin/pm2 list",
