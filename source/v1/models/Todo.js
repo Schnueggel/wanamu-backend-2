@@ -11,8 +11,7 @@ export const Colors = {
 export const todoSchema = new mongoose.Schema({
     title: {
         type: String,
-        trim: true,
-        required: 'Title is required'
+        trim: true
     },
     description: {
         type: String,

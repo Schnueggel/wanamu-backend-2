@@ -29,7 +29,15 @@ export class TodoController {
 
         const finished = todoDoc.finished;
 
-        Object.assign(todoDoc, _.pick(ctx.request.body, ['title', 'description', 'color', 'finished']));
+        const updatedFields = _.pick(ctx.request.body, ['title', 'description', 'color', 'finished']);
+
+        if (_.isEmpty(updatedFields)) {
+            ctx.status = 400;
+            result.error = new Error('Need data to update Todo');
+            return ctx.body = result;
+        }
+
+        Object.assign(todoDoc, updatedFields);
 
         try {
             const newTodoDoc = await todoDoc.save();
@@ -38,7 +46,7 @@ export class TodoController {
         } catch(err) {
             log.error(err);
             if (err instanceof mongoose.Error.ValidationError) {
-                result.error = errors.ValidationError.fromMongooseValidationError(err);
+                result.error = new errors.ValidationError.fromMongooseValidationError(err);
                 ctx.status = 422;
             } else {
                 result.error = new Error(err.message);

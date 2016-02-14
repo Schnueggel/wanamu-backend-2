@@ -197,6 +197,30 @@ describe('Todo', function () {
             });
     });
 
+    it('Should not update todo because of empty body', function (done) {
+        superagent.put(`${baseUrl}/v1/todo/${todo._id}`)
+            .send({})
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(400);
+                done();
+            });
+    });
+
+    it('Should not update todo because of not used field', function (done) {
+        superagent.put(`${baseUrl}/v1/todo/${todo._id}`)
+            .send({zyx:3})
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(400);
+                done();
+            });
+    });
+
     it('Should update todo', function (done) {
         superagent.put(`${baseUrl}/v1/todo/${todo._id}`)
             .send({title: 'New Title!!!'})
