@@ -70,7 +70,7 @@ export default async (ctx, next) => {
     }
 
     if (payload.expires < Date.now()) {
-        ctx.status = 419;
+        ctx.status = 418;
         ctx.body = {
             error: {
                 message: 'Token expired'
