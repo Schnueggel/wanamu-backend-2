@@ -56,20 +56,20 @@ router.get('/user/username/:username', user.userNameCheck);
 router.get('/user/username', user.userNameCheck);
 
 //Friends
-router.post('/user/:id/friend', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.inviteFriend);
-router.post('/user/friend', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.inviteFriend);
+router.post('/friend/:id/invite', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.inviteFriend);
+router.post('/friend/invite', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.inviteFriend);
 
-router.get('/user/:id/friend', authCheck, checkUserIdMw, friend.getFriends);
-router.get('/user/friend', authCheck, checkUserIdMw, friend.getFriends);
+router.get('/friend/:id', authCheck, checkUserIdMw, friend.getFriends);
+router.get('/friend', authCheck, checkUserIdMw, friend.getFriends);
 
-router.post('/user/:id/friend/accept', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.acceptInvitation);
-router.post('/user/friend/accept', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.acceptInvitation);
+router.post('/friend/:id/accept', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.acceptInvitation);
+router.post('/friend/accept', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.acceptInvitation);
 
-router.post('/user/:id/friend/decline', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.declineInvitation);
-router.post('/user/friend/decline', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.declineInvitation);
+router.post('/friend/:id/decline', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.declineInvitation);
+router.post('/friend/decline', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.declineInvitation);
 
-router.delete('/user/:id/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
-router.delete('/user/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
+router.delete('/friend/:fid/:id', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
+router.delete('/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
 
 router.get('/notification', authCheck, pagination, notification.getNotifications);
 

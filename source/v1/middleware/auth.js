@@ -20,6 +20,9 @@ export default async (ctx, next) => {
                 message: 'Invalid csrf token'
             }
         };
+
+        log.error(ctx.body.error);
+
         return;
     }
 
@@ -32,6 +35,9 @@ export default async (ctx, next) => {
                 message: 'Invalid Authorization header'
             }
         };
+
+        log.error(ctx.body.error);
+
         return;
     }
 
@@ -44,6 +50,9 @@ export default async (ctx, next) => {
                 message: 'Unable to find Token'
             }
         };
+
+        log.error(ctx.body.error);
+
         return;
     }
 
@@ -56,6 +65,9 @@ export default async (ctx, next) => {
                 message: 'Invalid Token'
             }
         };
+
+        log.error(ctx.body.error);
+
         return;
     }
 
@@ -76,6 +88,9 @@ export default async (ctx, next) => {
                 message: 'Token expired'
             }
         };
+
+        log.error(ctx.body.error);
+
         return;
     }
 
@@ -87,6 +102,9 @@ export default async (ctx, next) => {
         ctx.body = {
             error: new errors.NotFoundError('User not found')
         };
+
+        log.error(ctx.body.error);
+
         return;
     }
 

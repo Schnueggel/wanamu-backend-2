@@ -75,7 +75,7 @@ describe('User', function () {
     });
 
     it('Should invite friend', function (done) {
-        superagent.post(`${baseUrl}/v1/user/${user._id}/friend`)
+        superagent.post(`${baseUrl}/v1/friend/${user._id}/invite`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -116,7 +116,7 @@ describe('User', function () {
             done();
         });
 
-        superagent.post(`${baseUrl}/v1/user/friend/accept`)
+        superagent.post(`${baseUrl}/v1/friend/accept`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
@@ -160,7 +160,7 @@ describe('User', function () {
     });
 
     it('Should invite friend 2', function (done) {
-        superagent.post(`${baseUrl}/v1/user/${user3._id}/friend`)
+        superagent.post(`${baseUrl}/v1/friend/${user3._id}/invite`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
@@ -172,7 +172,7 @@ describe('User', function () {
     });
 
     it('Should get friends pending', function (done) {
-        superagent.get(`${baseUrl}/v1/user/${user3._id}/friend`)
+        superagent.get(`${baseUrl}/v1/friend/${user3._id}`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
@@ -190,7 +190,7 @@ describe('User', function () {
     });
 
     it('Should get friends invitation', function (done) {
-        superagent.get(`${baseUrl}/v1/user/${user2._id}/friend`)
+        superagent.get(`${baseUrl}/v1/friend/${user2._id}`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -208,7 +208,7 @@ describe('User', function () {
     });
 
     it('Should decline friend', function (done) {
-        superagent.post(`${baseUrl}/v1/user/friend/decline`)
+        superagent.post(`${baseUrl}/v1/friend/decline`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -220,7 +220,7 @@ describe('User', function () {
     });
 
     it('Should get friends with no more invitation', function (done) {
-        superagent.get(`${baseUrl}/v1/user/${user2._id}/friend`)
+        superagent.get(`${baseUrl}/v1/friend/${user2._id}`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')
@@ -237,7 +237,7 @@ describe('User', function () {
     });
 
     it('Should get friends with no pending', function (done) {
-        superagent.get(`${baseUrl}/v1/user/${user3._id}/friend`)
+        superagent.get(`${baseUrl}/v1/friend/${user3._id}`)
             .set('Cookie', cookies3)
             .set('Authorization', `Bearer ${token3}`)
             .type('json')
@@ -254,7 +254,7 @@ describe('User', function () {
     });
 
     it('Should get friends', function (done) {
-        superagent.get(`${baseUrl}/v1/user/${user._id}/friend`)
+        superagent.get(`${baseUrl}/v1/friend/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -269,7 +269,7 @@ describe('User', function () {
     });
 
     it('Should delete friends', function (done) {
-        superagent.delete(`${baseUrl}/v1/user/${user._id}/friend/${user2._id}`)
+        superagent.delete(`${baseUrl}/v1/friend/${user2._id}/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -280,7 +280,7 @@ describe('User', function () {
     });
 
     it('Should get friends without deleted friend', function (done) {
-        superagent.get(`${baseUrl}/v1/user/${user._id}/friend`)
+        superagent.get(`${baseUrl}/v1/friend/${user._id}`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -335,7 +335,7 @@ describe('User', function () {
     });
 
     it('Should not allow friend invitation', function (done) {
-        superagent.post(`${baseUrl}/v1/user/${user2._id}/friend`)
+        superagent.post(`${baseUrl}/v1/friend/${user2._id}`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
             .type('json')

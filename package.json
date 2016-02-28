@@ -19,7 +19,7 @@
     "start": "./node_modules/.bin/pm2 start dist/index.js --name=\"api\"",
     "stop": "./node_modules/.bin/pm2 delete api",
     "pm": "./node_modules/.bin/pm2 list",
-    "pm-log": "./node_modules/.bin/pm2 logs api"
+    "pm-log": "./node_modules/.bin/pm2 logs"
   },
   "homepage": "https://github.com/Schnueggel/wanamu-backend-2",
   "author": "Christian Steinmann",
