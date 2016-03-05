@@ -20,6 +20,12 @@ const v1 = {
 
         app.use(bodyParser())
             .use(cors({credentials: true}))
+            .use(async (ctx, next) => {
+                const start = new Date;
+                await next();
+                const ms = new Date - start;
+                log.info(`${ctx.method} ${ctx.url} - ${ms}ms`);
+            })
             .use(router.routes());
 
         routesIO(io.create(server));
