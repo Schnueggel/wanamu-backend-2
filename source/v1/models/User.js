@@ -70,7 +70,27 @@ export const userSchema = new mongoose.Schema({
     defaultTodolistId: {
         type: mongoose.Schema.Types.ObjectId
     }
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+});
+
+userSchema.virtual('pending').set(function(value){
+    this._pending = value;
+});
+
+userSchema.virtual('pending').get(function() {
+    return this._pending === true;
+});
+
+userSchema.virtual('invitation').set(function(value) {
+    this._invitation = value;
+});
+
+userSchema.virtual('invitation').get(function() {
+    return this._invitation === true;
+});
 
 userSchema.methods = {
     encryptPassword(password){

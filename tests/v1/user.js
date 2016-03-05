@@ -179,12 +179,9 @@ describe('User', function () {
             .end((err, res) => {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
-                expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].invitations.length).toEqual(0);
-                expect(res.body.data[0].friends.length).toEqual(1);
-                expect(res.body.data[0].pending.length).toEqual(1);
-                expect(Object.keys(res.body.data[0].pending[0]).sort()).toEqual(['avatar', 'username', '_id'].sort());
-                expect(Object.keys(res.body.data[0].friends[0]).sort()).toEqual(['firstname', 'lastname', 'avatar', 'username', 'salutation', '_id'].sort());
+                expect(res.body.data.length).toEqual(2);
+                expect(res.body.data[1].pending).toEqual(true);
+                expect(res.body.data[0].pending).toEqual(false);
                 done();
             });
     });
@@ -197,12 +194,9 @@ describe('User', function () {
             .end((err, res) => {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
-                expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].pending.length).toEqual(0);
-                expect(res.body.data[0].friends.length).toEqual(1);
-                expect(res.body.data[0].invitations.length).toEqual(1);
-                expect(Object.keys(res.body.data[0].invitations[0]).sort()).toEqual(['avatar', 'username', '_id'].sort());
-                expect(Object.keys(res.body.data[0].friends[0]).sort()).toEqual(['firstname', 'lastname', 'avatar', 'username', 'salutation', '_id'].sort());
+                expect(res.body.data.length).toEqual(2);
+                expect(res.body.data[1].invitation).toEqual(true);
+                expect(res.body.data[0].invitation).toEqual(false);
                 done();
             });
     });
@@ -228,10 +222,7 @@ describe('User', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].pending.length).toEqual(0);
-                expect(res.body.data[0].friends.length).toEqual(1);
-                expect(res.body.data[0].invitations.length).toEqual(0);
-                expect(Object.keys(res.body.data[0].friends[0]).sort()).toEqual(['firstname', 'lastname', 'avatar', 'username', 'salutation', '_id'].sort());
+                expect(res.body.data[0].invitation).toEqual(false);
                 done();
             });
     });
@@ -245,10 +236,7 @@ describe('User', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].pending.length).toEqual(0);
-                expect(res.body.data[0].friends.length).toEqual(1);
-                expect(res.body.data[0].invitations.length).toEqual(0);
-                expect(Object.keys(res.body.data[0].friends[0]).sort()).toEqual(['firstname', 'lastname', 'avatar', 'username', 'salutation', '_id'].sort());
+                expect(res.body.data[0].pending).toEqual(false);
                 done();
             });
     });
@@ -261,9 +249,7 @@ describe('User', function () {
             .end((err, res) => {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
-                expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].friends.length).toEqual(2);
-                expect(Object.keys(res.body.data[0].friends[0]).sort()).toEqual(['firstname', 'lastname', 'avatar', 'username', 'salutation', '_id'].sort());
+                expect(res.body.data.length).toEqual(2);
                 done();
             });
     });
@@ -288,8 +274,6 @@ describe('User', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].friends.length).toEqual(1);
-                expect(Object.keys(res.body.data[0].friends[0]).sort()).toEqual(['firstname', 'lastname', 'avatar', 'username', 'salutation', '_id'].sort());
                 done();
             });
     });
@@ -315,7 +299,7 @@ describe('User', function () {
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.data.length).toEqual(1);
-                expect(res.body.data[0].friends.indexOf(user2._id.toString())).toEqual(-1);
+                expect(res.body.data.indexOf(user2._id.toString())).toEqual(-1);
                 done();
             });
     });

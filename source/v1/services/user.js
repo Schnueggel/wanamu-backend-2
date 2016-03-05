@@ -7,23 +7,21 @@ export class UserService {
     /**
      * Returns an object containg friends, invitations for a user and pending invitations of a user
      * @param {User} user
-     * @returns {{
-     *    friends: {}
-     *    pending: {}
-     *    invitations: {}
-     * }}
+     * @returns {Array<User>}
      */
     async getFriendList(user) {
-        const result = {};
+        let result;
 
-        result.friends = await User.find({
+        const friends = await User.find({
             _id: {
                 $in: user.friends
             },
             friends: user._id
         }, '_id firstname lastname username avatar salutation').exec();
 
-        result.pending = await User.find({
+        //Friends that didn't accept the invitation so far
+
+        const pending = await User.find({
             _id: {
                 $in: user.friends
             },
@@ -32,12 +30,21 @@ export class UserService {
             }
         }, '_id username avatar').exec();
 
-        result.invitations = await User.find({
+        console.dir(pending);
+        pending.forEach(v => v.pending = true);
+        result = friends.concat(pending);
+
+        //Invitations that the user got
+
+        const invitations = await User.find({
             _id: {
                 $nin: user.friends
             },
             friends: user._id
         }, '_id username avatar').exec();
+
+        invitations.forEach(v => v.invitation = true);
+        result = result.concat(invitations);
 
         return result;
     }

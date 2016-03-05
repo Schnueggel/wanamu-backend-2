@@ -217,7 +217,7 @@ export class FriendController {
             return;
         }
 
-        result.data = [await userService.getFriendList(user)];
+        result.data = await userService.getFriendList(user);
 
         ctx.body = result;
     }

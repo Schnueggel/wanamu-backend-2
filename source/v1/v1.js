@@ -33,6 +33,7 @@ const v1 = {
         app.server = server;
 
         log.info('V1 App created');
+
         return app;
     }
 };
