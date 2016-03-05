@@ -16,10 +16,13 @@ describe('App Notification', function () {
     const baseUrl = `http://localhost:${config.WU_PORT}`;
 
     before(function (done) {
-        setupDb('-notification').then( (data) =>  {
+        setupDb('-notification').then((data) =>  {
             dbData = data;
             done();
-        }).catch(done);
+        }).catch((err)=> {
+            console.error(err);
+            done(err);
+        });
     });
 
     it('Should login', function (done) {

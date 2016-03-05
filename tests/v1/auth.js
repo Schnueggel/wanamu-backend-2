@@ -10,8 +10,10 @@ describe('App Auth', function () {
         cookies;
 
     before(function (done) {
-        setupDb().then(() =>   done()).catch((err) => {
-            console.error(err);
+        setupDb().then(() => {
+            done();
+        }).catch((err) => {
+            console.error('Database setup error: ', err);
             done();
         });
     });

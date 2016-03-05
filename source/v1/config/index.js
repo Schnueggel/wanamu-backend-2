@@ -1,4 +1,6 @@
 import nconf from 'nconf';
+import fs from 'fs';
+import path from 'path';
 
 export class Config {
     static get requiredVars() {
@@ -8,9 +10,16 @@ export class Config {
     constructor() {
         this.WU_MONGO_AUTOINDEX = true;
 
-        nconf
-            .argv()
-            .env({
+        nconf.argv();
+
+        //Use this path for dev env only for production and staging use environment vars
+        const configPath = path.join(__dirname, 'config.js');
+
+        if (fs.statSync(configPath).isFile()) {
+            nconf.defaults(require(configPath).default);
+        }
+
+        nconf.env({
                 separator: '__',
                 match: /WU_.+/
             });
@@ -27,7 +36,6 @@ export class Config {
             throw new Error(`Missing environment vars ${notFoundEnvs.join(',\n')}`);
         }
     }
-
 
     get WU_REDIS_HOST() {
         return this._WU_REDIS_HOST;

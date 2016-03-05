@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 describe('App Register', function () {
 
     before(function (done) {
-        setupDb().then( () => {
+        setupDb().then(() => {
             done();
         }).catch(done);
     });

@@ -8,6 +8,7 @@ import os from 'os';
 import http from 'http';
 
 import v1 from './v1/v1.js';
+import config from './v1/config';
 import log from './v1/config/log';
 
 /**
@@ -31,7 +32,7 @@ export class Cluster {
 
     createApp() {
         const app = new Koa(),
-            port = process.env.WU_PORT || 1337;
+            port = config.WU_PORT;
 
         //Rewrite all request without version to the default version
         app.use(rewrite(/^\/([^v\d].+)/, '/v1/$1'));
