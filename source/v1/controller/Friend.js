@@ -171,7 +171,7 @@ export class FriendController {
         const result = {},
             fid = ctx.params.fid;
 
-        const friendDoc = await User.findByIdAndUpdate(fid, {
+        await User.findByIdAndUpdate(fid, {
             $pull: {
                 friends: ctx.params.id
             }
@@ -183,7 +183,7 @@ export class FriendController {
             }
         }, {new: true}).exec();
 
-        if (!userDoc || !friendDoc) {
+        if (!userDoc) {
             ctx.status = 404;
             result.error = new errors.NotFoundError('User not found');
         } else {
