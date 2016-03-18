@@ -20,9 +20,9 @@ export class Config {
         }
 
         nconf.env({
-                separator: '__',
-                match: /WU_.+/
-            });
+            separator: '__',
+            match: /WU_.+/
+        });
 
         Object.assign(this, nconf.get());
 
@@ -30,7 +30,7 @@ export class Config {
     }
 
     validateConfig() {
-        const notFoundEnvs = Config.requiredVars.filter( env => this[env] === undefined);
+        const notFoundEnvs = Config.requiredVars.filter(env => this[env] === undefined);
 
         if (notFoundEnvs.length > 0) {
             throw new Error(`Missing environment vars ${notFoundEnvs.join(',\n')}`);

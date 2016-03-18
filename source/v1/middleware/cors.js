@@ -117,5 +117,5 @@ export default function cors (options) {
 
             ctx.status = 204;
         }
-    }
+    };
 }
