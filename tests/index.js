@@ -8,10 +8,10 @@ import config from '../dist/v1/config';
 
 before(function (done) {
     this.timeout(30000);
-    child_process.exec('npm start');
 
     let testCount = 0;
 
+    // npm start should be called together with this script
     const interval = setInterval(() => {
         testCount++;
         console.log('Test if Cluster is running');

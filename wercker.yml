@@ -5,5 +5,5 @@ services:
 build:
   steps:
     - npm-install
+    - script: npm start
     - npm-test
-    - npm-start

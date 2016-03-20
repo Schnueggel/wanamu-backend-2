@@ -8,7 +8,7 @@
     "url": "git+https://github.com/Schnueggel/wanamu-backend-2.git"
   },
   "scripts": {
-    "test": "npm run build && \"./node_modules/.bin/\"mocha --compilers js:babel-register \"tests/**/*.js\"",
+    "test": "npm run build && npm start && \"./node_modules/.bin/\"mocha --compilers js:babel-register \"tests/**/*.js\"",
     "test-watch": "./node_modules/.bin/watch-exec -c \"npm run test -s\" -w source -w tests",
     "lint": "./node_modules/.bin/eslint source/*",
     "lint-watch": "./node_modules/.bin/esw -w source",
