@@ -16,7 +16,9 @@ const v1 = {
     create(server){
         const app = new Koa();
 
-        mongo.open();
+        mongo.open().catch((err) => {
+            throw err;
+        });
 
         app.use(bodyParser())
             .use(cors({credentials: true}))

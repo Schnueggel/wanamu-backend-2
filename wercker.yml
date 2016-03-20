@@ -6,6 +6,9 @@ build:
   steps:
     - npm-install
     - script:
+        name: env
+        code: env
+    - script:
         name: npm run build
         code: npm run build
     - script:
