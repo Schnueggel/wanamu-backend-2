@@ -28,7 +28,9 @@ build:
         code: tail -n 1000 /root/.pm2/logs/api-error-0.log
     - script:
         name: npm stop
-        code: npm stop
+        code: |
+          npm stop
+          ls
 deploy:
   steps:
     - heroku-deploy:
