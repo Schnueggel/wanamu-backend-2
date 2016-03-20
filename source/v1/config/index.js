@@ -51,7 +51,7 @@ export class Config {
 
     get WU_REDIS_PASSWORD () { return this._WU_REDIS_PASSWORD; }
     set WU_REDIS_PASSWORD (value) { this._WU_REDIS_PASSWORD = value; }
-    
+
     get WU_SOCKET_PORT() {
         return this._WU_SOCKET_PORT;
     }
@@ -61,7 +61,8 @@ export class Config {
     }
 
     get WU_MONGO() {
-        return `mongodb://${this.WU_MONGO_HOST}:${this.WU_MONGO_PORT}/${this.WU_MONGO_DB}`;
+        const auth = this.WU_MONGO_USER ? this.WU_MONGO_USER + ':' + this.WU_MONGO_PASSWORD  + '@' : '';
+        return `mongodb://${auth}${this.WU_MONGO_HOST}:${this.WU_MONGO_PORT}/${this.WU_MONGO_DB}`;
     }
 
     get WU_MONGO_AUTOINDEX() {
@@ -71,6 +72,12 @@ export class Config {
     set WU_MONGO_AUTOINDEX(value) {
         this._WU_MONGO_AUTOINDEX = value;
     }
+
+    get WU_MONGO_USER () { return this._WU_MONGO_USER; }
+    set WU_MONGO_USER (value) { this._WU_MONGO_USER = value; }
+
+    get WU_MONGO_PASSWORD () { return this._WU_MONGO_PASSWORD; }
+    set WU_MONGO_PASSWORD (value) { this._WU_MONGO_PASSWORD = value; }
 
     get WU_JWT_SECRET() {
         return this._WU_JWT_SECRET;
