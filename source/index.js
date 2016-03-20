@@ -19,7 +19,7 @@ export class Cluster {
     constructor(cpus=1) {
         this.workers = [];
 
-        cpus = Number(cpus);
+        cpus = parseInt(cpus, 10);
 
         if (cpus === -1) {
             cpus = os.cpus();
