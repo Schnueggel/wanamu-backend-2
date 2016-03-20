@@ -27,6 +27,12 @@ build:
         name: npm stop
         code: |
           npm stop
+    - script:
+        name: remove source files
+        code: |
+          rm .gitignore
+          rm -rf test
+          rm -rf source
 deploy:
   steps:
     - script:
@@ -36,4 +42,4 @@ deploy:
         key: $HEROKU_KEY
         user: $HEROKU_USER
         app-name: $HEROKU_APP_NAME
-        key-name: heroku
+        key-name: HEROKU_SSH
