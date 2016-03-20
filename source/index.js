@@ -24,7 +24,7 @@ export class Cluster {
         }
         
         if (cluster.isMaster) {
-            log.info('Master starts');
+            log.info(`Master starts with ${cpus} requested cpus`);
             for (let i = 0; i < cpus; i++) {
                 this.workers[i] = cluster.fork();
             }
