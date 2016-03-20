@@ -15,9 +15,10 @@ export class Config {
         //Use this path for dev env only for production and staging use environment vars
         const configPath = path.join(__dirname, 'config.js');
 
-        if (fs.statSync(configPath).isFile()) {
+        try{
+            fs.statSync(configPath);
             nconf.defaults(require(configPath).default);
-        }
+        } catch(err){}
 
         nconf.env({
             separator: '__',
@@ -56,7 +57,7 @@ export class Config {
     get WU_MONGO() {
         return `mongodb://${this.WU_MONGO_HOST}:${this.WU_MONGO_PORT}/${this.WU_MONGO_DB}`;
     }
-    
+
     get WU_MONGO_AUTOINDEX() {
         return this._WU_MONGO_AUTOINDEX;
     }
