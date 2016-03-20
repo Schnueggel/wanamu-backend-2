@@ -49,7 +49,7 @@ export class Cluster {
         // On every request run the koa app callback
         server.on('request', app.callback());
 
-        server.listen(port, '0.0.0.0', () => {
+        server.listen(port, () => {
             log.info('Wanamu backend 2 started at port ' + port);
         });
     }
