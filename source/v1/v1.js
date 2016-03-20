@@ -16,8 +16,6 @@ const v1 = {
     create(server){
         const app = new Koa();
 
-        log.info(config);
-        
         mongo.open().catch((err) => {
             throw err;
         });
