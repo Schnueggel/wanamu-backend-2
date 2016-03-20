@@ -9,6 +9,7 @@ export default {
     redis,
     createClient() {
         if(!this.redisClient) {
+            console.log(config.WU_REDIS_HOST);
             this.redisClient = redis.createClient({
                 host: config.WU_REDIS_HOST
             });
