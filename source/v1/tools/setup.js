@@ -9,11 +9,7 @@ import Todo from '../models/Todo';
 import Notification from '../models/Notification';
 import mongo from '../config/mongo';
 import BluePromise from 'bluebird';
-import Todolist from '../models/Todolist';
 import userService from '../services/user';
-import { Constants } from '../config/constants';
-import http from 'http';
-import v1 from '../v1';
 
 /**
  * Db Setup
