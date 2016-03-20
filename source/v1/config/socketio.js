@@ -8,7 +8,7 @@ export default {
     io: io,
     create(server) {
         const socketio = io(server);
-        const adapter = sredis({pub: redis.createClient(), sub: redis.createSubClient()});
+        const adapter = sredis({pubClient: redis.createClient(), subClient: redis.createSubClient()});
 
         this.emitter = socketEmitter(adapter.pubClient);
         socketio.adapter(adapter);
