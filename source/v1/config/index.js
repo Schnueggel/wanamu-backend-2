@@ -4,7 +4,7 @@ import path from 'path';
 
 export class Config {
     static get requiredVars() {
-        return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'WU_PORT', 'REDIS_PORT'];
+        return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'WU_PORT', 'WU_REDIS_PORT'];
     }
 
     constructor() {
