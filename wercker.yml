@@ -24,13 +24,9 @@ build:
         name: npm run mocha
         code: npm run mocha
     - script:
-        name: npm show logs
-        code: tail -n 1000 /root/.pm2/logs/api-error-0.log
-    - script:
         name: npm stop
         code: |
           npm stop
-          ls
 deploy:
   steps:
     - script:
@@ -40,4 +36,4 @@ deploy:
         key: $HEROKU_KEY
         user: $HEROKU_USER
         app-name: $HEROKU_APP_NAME
-        key-name: $HEROKU_SSH
+        key-name: heroku
