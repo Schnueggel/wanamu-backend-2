@@ -33,7 +33,11 @@ build:
           ls
 deploy:
   steps:
+    - script:
+        name: show dir
+        code: ls
     - heroku-deploy:
         key: $HEROKU_KEY
         user: $HEROKU_USER
         app-name: $HEROKU_APP_NAME
+        key-name: $HEROKU_SSH
