@@ -15,6 +15,9 @@ build:
         name: npm start
         code: npm start
     - script:
+        name: npm show logs
+        code: tail -n 50 /root/.pm2/logs/api-error-0.log
+    - script:
         name: npm run pm-show
         code: npm run pm-show
     - script:
