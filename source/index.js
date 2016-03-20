@@ -19,10 +19,12 @@ export class Cluster {
     constructor(cpus=1) {
         this.workers = [];
 
+        cpus = Number(cpus);
+
         if (cpus === -1) {
             cpus = os.cpus();
         }
-        
+
         if (cluster.isMaster) {
             log.info(`Master starts with ${cpus} requested cpus`);
             for (let i = 0; i < cpus; i++) {
