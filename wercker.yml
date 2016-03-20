@@ -1,6 +1,6 @@
 box: node:5.9
 services:
-    - mongodb
+    - mongo
     - redis
 build:
   steps:
