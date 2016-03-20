@@ -73,5 +73,5 @@ export class Cluster {
 }
 
 if (!module.parent) {
-    new Cluster(process.env.WU_CPUS || os.cpus().length);
+    new Cluster(process.env.WU_CPUS || -1);
 }
