@@ -1,20 +1,15 @@
 import bunyan from 'bunyan';
-import bunyanLogentries from 'bunyan-logentries';
 import config from './';
 import cluster from 'cluster';
 
 export const options = {
     name: config.WU_APP_NAME,
     worker: cluster.isWorker ? cluster.worker.id : 'master',
-    version: 'v1'
-};
-
-if (config.WU_LOGGER_TOKEN) {
-    options.streams = [{
+    version: 'v1',
+    streams: [{
         level: 'info',
-        stream: bunyanLogentries.createStream({token: config.WU_LOGGER_TOKEN}),
-        type: 'raw'
-    }];
-}
+        stream: process.stdout
+    }]
+};
 
 export default bunyan.createLogger(options);

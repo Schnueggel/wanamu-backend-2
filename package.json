@@ -33,7 +33,6 @@
     "bcrypt": "^0.8.5",
     "bluebird": "^3.3.4",
     "bunyan": "^1.8.0",
-    "bunyan-logentries": "^1.2.0",
     "jwt-simple": "^0.5.0",
     "kerberos": "0.0.19",
     "koa": "^2.0.0-alpha.3",
