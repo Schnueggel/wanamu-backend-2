@@ -73,6 +73,9 @@ export class Config {
         this._WU_MONGO_AUTOINDEX = value;
     }
 
+    get WU_LOGGER_TOKEN () { return this._WU_LOGGER_TOKEN; }
+    set WU_LOGGER_TOKEN (value) { this._WU_LOGGER_TOKEN = value; }
+    
     get WU_MONGO_USER () { return this._WU_MONGO_USER; }
     set WU_MONGO_USER (value) { this._WU_MONGO_USER = value; }
 

@@ -18,7 +18,7 @@ const mongoUtil = {
             mongoose.connection.db.collections().then(function (colls) {
                 const promises = [];
                 colls.forEach((e) => {
-                    if(e.s.name.indexOf('System.') === -1 && e.s.name.indexOf('system.') === -1) {
+                    if(e.s.name.toLowerCase().indexOf('system.') === -1) {
                         promises.push(mongoose.connection.db.dropCollection(e.s.name));
                     }
                 });
