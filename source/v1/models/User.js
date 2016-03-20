@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import BluePromise from 'bluebird';
-import { todolistSchema } from './Todolist';
 
 export const Salutations = {
     Mr: 'Mr',

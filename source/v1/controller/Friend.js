@@ -1,6 +1,5 @@
 import User from '../models/User';
 import errors from '../errors';
-import mongoose from 'mongoose';
 import userService from '../services/user';
 import notificationService from '../services/notification';
 

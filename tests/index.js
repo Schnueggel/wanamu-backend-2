@@ -22,7 +22,7 @@ before(function (done) {
                 console.log('Cluster is running');
                 clearInterval(interval);
             }
-            if (testCount > 20) {
+            if (testCount > 25) {
                 clearInterval(interval);
                 done(new Error('Failed to reach cluster'));
             }

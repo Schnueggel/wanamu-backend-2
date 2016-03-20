@@ -6,7 +6,6 @@ import mongoose from 'mongoose';
 import BluePromise from 'bluebird';
 import * as _ from 'lodash';
 import notificationService from '../services/notification';
-import Notification from '../models/Notification';
 import log from '../config/log';
 
 /**

@@ -1,11 +1,7 @@
-import Todo from '../models/Todo';
+
 import Todolist from '../models/Todolist';
-import User from '../models/User';
 import errors from '../errors';
-import mongoose from 'mongoose';
-import BluePromise from 'bluebird';
 import todoService from '../services/todo';
-import * as _ from 'lodash';
 
 export class TodolistController {
 

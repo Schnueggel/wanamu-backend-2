@@ -1,8 +1,6 @@
 import Todo from '../models/Todo';
-import Todolist from '../models/Todolist';
 import User from '../models/User';
 import bluebird from 'bluebird';
-import mongoose from 'mongoose';
 
 /**
  * @namespace wu.service

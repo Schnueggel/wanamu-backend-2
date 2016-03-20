@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 export default async (ctx, next) => {
     if (/[0-9]+/.test(ctx.request.query.page) === false) {
         ctx.request.query.page = 1;

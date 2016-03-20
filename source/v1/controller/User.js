@@ -1,7 +1,5 @@
 import User from '../models/User';
 import errors from '../errors';
-import mongoose from 'mongoose';
-import * as _ from 'lodash';
 
 export class UserController {
     /**

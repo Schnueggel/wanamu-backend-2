@@ -1,6 +1,5 @@
 import sio from '../config/socketio';
 import Notification from '../models/Notification';
-import * as socketEmitter from 'socket.io-emitter';
 
 export const Events = {
     Shared_Todo_Finished: 'Shared_Todo_Updated',

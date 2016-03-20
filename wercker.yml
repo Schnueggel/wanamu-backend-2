@@ -6,3 +6,4 @@ build:
   steps:
     - npm-install
     - npm-test
+    - npm-start
