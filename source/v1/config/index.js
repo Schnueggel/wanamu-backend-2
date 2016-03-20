@@ -4,7 +4,7 @@ import path from 'path';
 
 export class Config {
     static get requiredVars() {
-        return ['WU_MONGO', 'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'WU_PORT'];
+        return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'WU_PORT'];
     }
 
     constructor() {
@@ -54,13 +54,9 @@ export class Config {
     }
 
     get WU_MONGO() {
-        return this._WU_MONGO;
+        return `mongodb://${this.WU_MONGO_HOST}:${this.WU_MONGO_PORT}/${this.WU_MONGO_DB}`;
     }
-
-    set WU_MONGO(value) {
-        this._WU_MONGO = value;
-    }
-
+    
     get WU_MONGO_AUTOINDEX() {
         return this._WU_MONGO_AUTOINDEX;
     }
@@ -92,6 +88,15 @@ export class Config {
     set WU_APP_NAME(value) {
         this._WU_APP_NAME = value;
     }
+
+    get WU_MONGO_HOST () { return this._WU_MONGO_HOST; }
+    set WU_MONGO_HOST (value) { this._WU_MONGO_HOST = value; }
+
+    get WU_MONGO_PORT () { return this._WU_MONGO_PORT; }
+    set WU_MONGO_PORT (value) { this._WU_MONGO_PORT = value; }
+
+    get WU_MONGO_DB () { return this._WU_MONGO_DB; }
+    set WU_MONGO_DB (value) { this._WU_MONGO_DB = value; }
 }
 
 

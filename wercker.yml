@@ -12,9 +12,14 @@ build:
         name: npm run build
         code: npm run build
     - script:
+        name: map env
+        code: |
+          export WU_REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+          export WU_MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
+    - script:
         name: npm start
         code: npm start
-    - script:
+    - script:-
         name: npm show logs
         code: tail -n 50 /root/.pm2/logs/api-error-0.log
     - script:
@@ -23,3 +28,6 @@ build:
     - script:
         name: npm run mocha
         code: npm run mocha
+    - script:
+        name: npm stop
+        code: npm stop
