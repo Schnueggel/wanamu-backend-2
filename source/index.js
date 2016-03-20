@@ -22,7 +22,7 @@ export class Cluster {
         cpus = parseInt(cpus, 10);
 
         if (cpus === -1) {
-            cpus = os.cpus();
+            cpus = os.cpus().length;
         }
 
         if (cluster.isMaster) {
