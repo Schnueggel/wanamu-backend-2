@@ -30,10 +30,6 @@ before(function (done) {
     }, 1000);
 });
 
-after(function (done) {
-    child_process.exec('npm stop', done);
-});
-
 describe('App Cluster', function () {
     let token,
         cookies;

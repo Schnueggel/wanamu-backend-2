@@ -8,17 +8,19 @@
     "url": "git+https://github.com/Schnueggel/wanamu-backend-2.git"
   },
   "scripts": {
-    "test": "npm run build && npm start && \"./node_modules/.bin/\"mocha --compilers js:babel-register \"tests/**/*.js\"",
+    "test": "npm run build && npm start && npm run mocha && npm stop",
     "test-watch": "./node_modules/.bin/watch-exec -c \"npm run test -s\" -w source -w tests",
+    "mocha": "\"./node_modules/.bin/\"mocha --compilers js:babel-register \"tests/**/*.js\"",
     "lint": "./node_modules/.bin/eslint source/*",
     "lint-watch": "./node_modules/.bin/esw -w source",
     "build": "rm -rf dist && \"./node_modules/.bin/\"babel source --out-dir dist --source-maps --extends .babelrc",
     "build-watch": "rm -rf dist && npm run build -- -w",
     "build-run": "npm run build && node dist/index.js",
     "dev-run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --name=\"api\"",
-    "start": "./node_modules/.bin/pm2 start dist/index.js --name=\"api\"",
+    "start": "./node_modules/.bin/pm2 start dist/index.js --name=\"api\" -f",
     "stop": "./node_modules/.bin/pm2 delete api",
     "pm": "./node_modules/.bin/pm2 list",
+    "pm-show": "./node_modules/.bin/pm2 show api",
     "pm-log": "./node_modules/.bin/pm2 logs"
   },
   "homepage": "https://github.com/Schnueggel/wanamu-backend-2",
