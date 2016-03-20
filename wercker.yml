@@ -6,9 +6,14 @@ build:
   steps:
     - npm-install
     - script:
+        name: npm build
+        code: npm build
+    - script:
         name: npm start
         code: npm start
     - script:
         name: npm run pm-show
         code: npm run pm-show
-    - npm-test
+    - script:
+        name: npm run mocha
+        code: npm run mocha
