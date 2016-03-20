@@ -16,7 +16,7 @@ before(function (done) {
         testCount++;
         console.log('Test if Cluster is running');
 
-        superagent.get('http://localhost:9999/v1/test').end((err, res) => {
+        superagent.get('http://127.0.0.1:9999/v1/test').end((err, res) => {
             if (!err) {
                 done();
                 console.log('Cluster is running');
