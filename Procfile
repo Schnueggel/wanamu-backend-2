@@ -1,1 +1,1 @@
-web: npm run start-link
+web: npm run start-link && npm run pm-log
