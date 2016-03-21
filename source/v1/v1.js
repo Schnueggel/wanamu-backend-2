@@ -4,8 +4,8 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import mongo from './config/mongo';
 import router from './config/routes';
-import io from './config/socketio';
-import redis from './config/redis';
+import socketConfig from './config/socketio';
+import redisConfig from './config/redis';
 import routesIO from './config/routes.io';
 import config from './config';
 import http from 'http';
@@ -30,7 +30,7 @@ const v1 = {
             })
             .use(router.routes());
 
-        routesIO(io.create(server));
+        routesIO(socketConfig.create(server));
 
         app.server = server;
 

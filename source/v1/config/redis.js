@@ -26,6 +26,16 @@ export default {
             });
         }
         return this.redisSubClient;
+    },
+
+    quit() {
+        if(!this.redisSubClient) {
+            this.redisSubClient.end(true);
+        }
+
+        if(!this.redisClient) {
+            this.redisClient.end(true);
+        }
     }
 };
 
