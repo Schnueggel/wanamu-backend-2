@@ -35,9 +35,6 @@ build:
           rm -rf source
 deploy:
   steps:
-    - script:
-        name: show dir
-        code: ls
     - heroku-deploy:
         key: $HEROKU_KEY
         user: $HEROKU_USER
