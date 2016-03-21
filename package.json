@@ -17,7 +17,7 @@
     "build-watch": "rm -rf dist && npm run build -- -w",
     "build-run": "npm run build && node dist/index.js",
     "dev-run-watch": "./node_modules/.bin/pm2 start dist/index.js --watch --name=\"api\"",
-    "start": "\"./node_modules/.bin/\"pm2 start dist/index.js --name=\"api\" -i 0 -f",
+    "start": "\"./node_modules/.bin/\"pm2 start dist/index.js --name=\"api\" -i $WU_CPUS -f",
     "start-link": "npm start && npm run pm-link",
     "stop": "./node_modules/.bin/pm2 delete api",
     "pm": "./node_modules/.bin/pm2 list",
