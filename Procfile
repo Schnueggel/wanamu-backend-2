@@ -1,1 +1,1 @@
-web: npm start-link
+web: npm run start-link
