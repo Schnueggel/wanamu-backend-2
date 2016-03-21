@@ -1,1 +1,1 @@
-web: npm start && npm run pm-link"
+web: npm start-link"
