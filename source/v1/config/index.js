@@ -25,6 +25,8 @@ export class Config {
             match: /WU_.+/
         });
 
+        this.PORT = process.env.PORT;
+
         Object.assign(this, nconf.get());
 
         this.validateConfig();
@@ -75,7 +77,7 @@ export class Config {
 
     get WU_LOGGER_TOKEN () { return this._WU_LOGGER_TOKEN; }
     set WU_LOGGER_TOKEN (value) { this._WU_LOGGER_TOKEN = value; }
-    
+
     get WU_MONGO_USER () { return this._WU_MONGO_USER; }
     set WU_MONGO_USER (value) { this._WU_MONGO_USER = value; }
 
