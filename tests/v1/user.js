@@ -12,7 +12,7 @@ describe('User', function () {
         dbData,
         user, user2, user3;
 
-    const baseUrl = `http://localhost:${config.WU_PORT}`;
+    const baseUrl = `http://localhost:${config.PORT}`;
 
     before(function (done) {
         setupDb().then((data) => {

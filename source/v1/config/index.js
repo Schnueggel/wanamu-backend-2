@@ -4,7 +4,7 @@ import path from 'path';
 
 export class Config {
     static get requiredVars() {
-        return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'WU_PORT', 'WU_REDIS_PORT'];
+        return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'PORT', 'WU_REDIS_PORT'];
     }
 
     constructor() {
@@ -90,12 +90,12 @@ export class Config {
         this._WU_JWT_SECRET = value;
     }
 
-    get WU_PORT() {
-        return this._WU_PORT;
+    get PORT() {
+        return this._PORT;
     }
 
-    set WU_PORT(value) {
-        this._WU_PORT = value;
+    set PORT(value) {
+        this._PORT = value;
     }
 
     get WU_APP_NAME() {

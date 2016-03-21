@@ -51,5 +51,5 @@ if (!module.parent) {
 
     server.on('request', app.callback());
 
-    server.listen(config.WU_PORT, '0.0.0.0');
+    server.listen(config.PORT, '0.0.0.0');
 }

@@ -13,7 +13,7 @@ describe('Todo', function () {
         dbData,
         user, user2;
 
-    const baseUrl = `http://localhost:${config.WU_PORT}`;
+    const baseUrl = `http://localhost:${config.PORT}`;
 
     before(function (done) {
         setupDb().then((data) => {

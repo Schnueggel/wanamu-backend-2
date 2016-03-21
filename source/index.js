@@ -10,7 +10,7 @@ import config from './v1/config';
 import log from './v1/config/log';
 
 const app = new Koa(),
-    port = config.WU_PORT;
+    port = config.PORT;
 
 //Rewrite all request without version to the default version
 app.use(rewrite(/^\/([^v\d].+)/, '/v1/$1'));

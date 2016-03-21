@@ -10,7 +10,7 @@ describe('App Todolist', function () {
         dbData,
         user;
 
-    const baseUrl = `http://localhost:${config.WU_PORT}`;
+    const baseUrl = `http://localhost:${config.PORT}`;
 
     before(function (done) {
         setupDb().then( (data) => {

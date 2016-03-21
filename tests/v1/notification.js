@@ -13,7 +13,7 @@ const options = {
 describe('App Notification', function () {
     let io, token, user, cookies, dbData;
 
-    const baseUrl = `http://localhost:${config.WU_PORT}`;
+    const baseUrl = `http://localhost:${config.PORT}`;
 
     before(function (done) {
         setupDb('-notification').then((data) =>  {
