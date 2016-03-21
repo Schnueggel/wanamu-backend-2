@@ -12,18 +12,18 @@ export class Config {
 
         nconf.argv();
 
+        nconf.env({
+            separator: '__',
+            match: /WU_.+/
+        });
+        
         //Use this path for dev env only for production and staging use environment vars
         const configPath = path.join(__dirname, 'config.js');
 
         try{
             fs.statSync(configPath);
-            nconf.defaults(require(configPath).default);
+            nconf.file(configPath);
         } catch(err){}
-
-        nconf.env({
-            separator: '__',
-            match: /WU_.+/
-        });
 
         this.PORT = process.env.PORT;
 
