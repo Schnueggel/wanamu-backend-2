@@ -4,7 +4,7 @@ import path from 'path';
 
 export class Config {
     static get requiredVars() {
-        return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_SOCKET_PORT', 'WU_REDIS_HOST', 'PORT', 'WU_REDIS_PORT'];
+        return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_REDIS_HOST', 'PORT', 'WU_REDIS_PORT'];
     }
 
     constructor() {
@@ -53,14 +53,6 @@ export class Config {
 
     get WU_REDIS_PASSWORD () { return this._WU_REDIS_PASSWORD; }
     set WU_REDIS_PASSWORD (value) { this._WU_REDIS_PASSWORD = value; }
-
-    get WU_SOCKET_PORT() {
-        return this._WU_SOCKET_PORT;
-    }
-
-    set WU_SOCKET_PORT(value) {
-        this._WU_SOCKET_PORT = value;
-    }
 
     get WU_MONGO() {
         const auth = this.WU_MONGO_USER ? this.WU_MONGO_USER + ':' + this.WU_MONGO_PASSWORD  + '@' : '';
