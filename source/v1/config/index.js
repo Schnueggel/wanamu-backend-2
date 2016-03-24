@@ -2,6 +2,22 @@ import nconf from 'nconf';
 import fs from 'fs';
 import path from 'path';
 
+/**
+ * Possible env vars: 
+ * WU_MONGO_HOST: localhost,
+ * WU_MONGO_PORT: 27017,
+ * WU_MONGO_USER: only set if there is a user,
+ * WU_MONGO_PASSWORD: only set if there is a password
+ * WU_MONGO_DB: wanamu-test,
+ * WU_JWT_SECRET: This must be set and should not be changed. If you change all current tokens will be invalid,
+ * WU_LOGGER_TOKEN: only set if there is a logger token,
+ * WU_REDIS_HOST: localhost,
+ * WU_REDIS_PORT: 6379,
+ * WU_REDIS_PASSWORD: only set if there is one,
+ * PORT: 9999,
+ * WU_CPUS: -1 for all cpus
+ * WU_APP_NAME: Wuhuhu
+ */
 export class Config {
     static get requiredVars() {
         return ['WU_MONGO_DB', 'WU_MONGO_HOST', 'WU_MONGO_PORT',  'WU_JWT_SECRET', 'WU_REDIS_HOST', 'PORT', 'WU_REDIS_PORT'];
