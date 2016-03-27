@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Possible env vars: 
+ * Possible env vars:
  * WU_MONGO_HOST: localhost,
  * WU_MONGO_PORT: 27017,
  * WU_MONGO_USER: only set if there is a user,
@@ -32,14 +32,17 @@ export class Config {
             separator: '__',
             match: /WU_.+/
         });
-        
+
         //Use this path for dev env only for production and staging use environment vars
         const configPath = path.join(__dirname, 'config.js');
 
         try{
             fs.statSync(configPath);
-            nconf.file(configPath);
-        } catch(err){}
+            nconf.defaults(require(configPath).default);
+        } catch(err){
+            console.log(err);
+            console.log('No local config file found');
+        }
 
         this.PORT = process.env.PORT;
 
