@@ -1,7 +1,7 @@
 import User from '../models/User';
 import errors from '../errors';
-import userService from '../services/user';
 import notificationService from '../services/notification';
+import userService from '../services/user';
 
 export class FriendController {
 
@@ -78,9 +78,44 @@ export class FriendController {
         if (!updated.ok) {
             ctx.status = 404;
             console.error(`Unable to add friend ${fid} to user ${ctx.params.id}`);
+        } else {
+            result.data = {
+                _id: friendDoc._id,
+                username: friendDoc.username
+            };
         }
 
         ctx.body = result;
+    }
+
+    /**
+     * request.params = {
+     *      username: string
+     * }
+     * @param {object} ctx
+     */
+    async inviteFriendByEmailOrUsername(ctx) {
+        if (!ctx.request.body.username) {
+            ctx.status = 400;
+            ctx.body = {
+                message: 'Invalid email or username'
+            };
+            return;
+        }
+
+        const user = await userService.findUserByEmailOrUsername(ctx.request.body.username);
+
+        if (!user) {
+            ctx.status = 401;
+            ctx.body = {
+                message: 'User not found'
+            };
+            return;
+        }
+
+        ctx.request.body.fid = user._id;
+
+        return friendController.inviteFriend(ctx);
     }
 
     /**
@@ -222,4 +257,6 @@ export class FriendController {
     }
 }
 
-export default new FriendController();
+const friendController = new FriendController();
+
+export default friendController;

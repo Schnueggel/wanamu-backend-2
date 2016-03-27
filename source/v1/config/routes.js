@@ -58,6 +58,7 @@ router.get('/user/username', user.userNameCheck);
 //Friends
 router.post('/friend/:id/invite', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.inviteFriend);
 router.post('/friend/invite', authCheck, checkUserIdMw, validObjectIdUsrFrMw, friend.inviteFriend);
+router.post('/friend/invitebyusername', authCheck, checkUserIdMw, friend.inviteFriendByEmailOrUsername);
 
 router.get('/friend/:id', authCheck, checkUserIdMw, friend.getFriends);
 router.get('/friend', authCheck, checkUserIdMw, friend.getFriends);

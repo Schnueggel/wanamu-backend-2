@@ -7,6 +7,7 @@ import config from '../config';
 import bcrypt from 'bcrypt';
 import BluePromise from 'bluebird';
 import { Constants } from '../config/constants';
+import userService from '../services/user';
 
 export class Auth {
 
@@ -32,9 +33,7 @@ export class Auth {
             }
         }
 
-        const user = await User.findOne({
-            '$or': [{email: login.username.toLowerCase()}, {username: login.username}]
-        }).exec();
+        const user = await userService.findUserByEmailOrUsername(login.username);
 
         if (!user) {
             ctx.status = 404;

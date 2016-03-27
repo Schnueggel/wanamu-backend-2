@@ -30,7 +30,7 @@ export class UserService {
             }
         }, '_id username avatar').exec();
 
-        console.dir(pending);
+        
         pending.forEach(v => v.pending = true);
         result = friends.concat(pending);
 
@@ -63,6 +63,17 @@ export class UserService {
         }, {new:true});
 
         return userDoc;
+    }
+
+    /**
+     * 
+     * @param username
+     * @returns {User}
+     */
+    async findUserByEmailOrUsername(username) {
+        return await User.findOne({
+            '$or': [{email: username.toLowerCase()}, {username: username}]
+        }).exec();
     }
 }
 

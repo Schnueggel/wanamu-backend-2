@@ -82,6 +82,7 @@ describe('User', function () {
             .send({fid: dbData.userDoc3._id})
             .end((err, res) => {
                 expect(res.status).toEqual(200);
+                expect(res.body.data.username).toEqual(dbData.userDoc3.username);
                 done();
             });
     });
@@ -167,6 +168,7 @@ describe('User', function () {
             .send({fid: dbData.userDoc2._id})
             .end((err, res) => {
                 expect(res.status).toEqual(200);
+                expect(res.body.data.username).toEqual(dbData.userDoc2.username);
                 done();
             });
     });
@@ -202,6 +204,31 @@ describe('User', function () {
     });
 
     it('Should decline friend', function (done) {
+        superagent.post(`${baseUrl}/v1/friend/decline`)
+            .set('Cookie', cookies2)
+            .set('Authorization', `Bearer ${token2}`)
+            .type('json')
+            .send({fid: dbData.userDoc3._id})
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                done();
+            });
+    });
+
+    it('Should invite friend by email', function (done) {
+        superagent.post(`${baseUrl}/v1/friend/invitebyusername`)
+            .set('Cookie', cookies3)
+            .set('Authorization', `Bearer ${token3}`)
+            .type('json')
+            .send({username: dbData.userDoc2.username})
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data.username).toEqual(dbData.userDoc2.username);
+                done();
+            });
+    });
+
+    it('Should decline friend 2', function (done) {
         superagent.post(`${baseUrl}/v1/friend/decline`)
             .set('Cookie', cookies2)
             .set('Authorization', `Bearer ${token2}`)
