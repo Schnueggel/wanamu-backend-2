@@ -41,7 +41,7 @@ export class UserService {
                 $nin: user.friends
             },
             friends: user._id
-        }, '_id username avatar').exec();
+        }, '_id firstname lastname username avatar salutation').exec();
 
         invitations.forEach(v => v.invitation = true);
         result = result.concat(invitations);
