@@ -103,17 +103,17 @@ describe('User', function () {
     });
 
     it('Should accept friend', function (done) {
-        const opts = Object.assign({query: 'jwt=' + token3}, {
+        const opts = Object.assign({query: 'jwt=' + token}, {
                 transports: ['websocket'],
                 'force new connection': true
             }),
             io = ioClient(`${baseUrl}/notification`, opts);
 
         io.on(NotifyEvents.Friend_Accepted, (data) => {
-            expect(data.meta._id).toEqual(dbData.userDoc1._id.toString());
-            expect(data.meta.username).toEqual(dbData.userDoc1.username);
-            expect(data.meta.firstname).toEqual(dbData.userDoc1.firstname);
-            expect(data.meta.lastname).toEqual(dbData.userDoc1.lastname);
+            expect(data.meta._id).toEqual(dbData.userDoc3._id.toString());
+            expect(data.meta.username).toEqual(dbData.userDoc3.username);
+            expect(data.meta.firstname).toEqual(dbData.userDoc3.firstname);
+            expect(data.meta.lastname).toEqual(dbData.userDoc3.lastname);
             done();
         });
 
