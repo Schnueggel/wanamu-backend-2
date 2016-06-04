@@ -61,10 +61,10 @@ export class NotificationService {
             message: 'Friend accepted',
             title: 'Friend accepted',
             owner: user._id,
-            meta: {_id: friend._id, firstname: friend.firstname, lastname: friend.lastname, username: friend.username}
+            meta: {_id: user._id, firstname: user.firstname, lastname: user.lastname, username: user.username}
         });
 
-        await this.send(user._id, note, Events.Friend_Accepted);
+        await this.send(friend._id, note, Events.Friend_Accepted);
     }
 
     /**
