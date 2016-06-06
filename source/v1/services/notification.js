@@ -1,5 +1,6 @@
 import sio from '../config/socketio';
 import Notification from '../models/Notification';
+import log from '../config/log';
 
 export const Events = {
     Shared_Todo_Finished: 'Shared_Todo_Updated',
@@ -16,6 +17,7 @@ export class NotificationService {
      * @param {string} event
      */
     async send(userId, notification, event = 'notification') {
+        log.info({userId, notification}, 'Notification');
         sio.emitter.of('/notification').in('room-' + userId).emit(event, notification);
     }
 
@@ -60,6 +62,22 @@ export class NotificationService {
         const note = await Notification.create({
             message: 'Friend accepted',
             title: 'Friend accepted',
+            owner: user._id,
+            meta: {_id: user._id, firstname: user.firstname, lastname: user.lastname, username: user.username}
+        });
+
+        await this.send(friend._id, note, Events.Friend_Accepted);
+    }
+    
+    /**
+     *
+     * @param {wu.model.User} user
+     * @param {wu.model.User} friend
+     */
+    async notifyFriendInvited(user, friend) {
+        const note = await Notification.create({
+            message: 'Friend invited',
+            title: 'Friend invited',
             owner: user._id,
             meta: {_id: user._id, firstname: user.firstname, lastname: user.lastname, username: user.username}
         });

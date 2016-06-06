@@ -85,6 +85,8 @@ export class FriendController {
             };
         }
 
+        notificationService.notifyFriendInvited(userDoc, friendDoc);
+        
         ctx.body = result;
     }
 
