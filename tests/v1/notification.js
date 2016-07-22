@@ -1,9 +1,10 @@
 'use strict';
 import superagent from 'superagent';
 import expect from 'expect';
-import { setupDb } from '../../dist/v1/tools/setup';
+import {setupDb} from '../../dist/v1/tools/setup';
 import ioClient from 'socket.io-client';
 import config from '../../dist/v1/config';
+import * as _ from 'lodash';
 
 const options = {
     transports: ['websocket'],
@@ -16,7 +17,7 @@ describe('App Notification', function () {
     const baseUrl = `http://localhost:${config.PORT}`;
 
     before(function (done) {
-        setupDb('-notification').then((data) =>  {
+        setupDb('-notification').then((data) => {
             dbData = data;
             done();
         }).catch((err)=> {
@@ -51,7 +52,7 @@ describe('App Notification', function () {
 
     it('Should join user room notification', function (done) {
         const opts = Object.assign({query: 'jwt=' + token}, options);
-        io = ioClient(`${baseUrl}/notification` , opts);
+        io = ioClient(`${baseUrl}/notification`, opts);
 
         io.on('joined', (data) => {
             expect(data.room).toEqual('room-' + user._id);
@@ -76,12 +77,17 @@ describe('App Notification', function () {
         });
     });
 
+    let notifications;
+    let unreadCount;
     it('Should get notifications', function (done) {
         superagent.get(`${baseUrl}/v1/notification`)
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
             .end((err, res) => {
+                notifications = res.body.data;
+                unreadCount = notifications.filter(v => v.read === false).length;
+
                 expect(res.status).toEqual(200);
                 expect(res.body.data).toBeAn('array');
                 expect(res.body.page).toEqual(1);
@@ -93,9 +99,10 @@ describe('App Notification', function () {
             });
     });
 
+
     it('Should have pagination', function (done) {
         superagent.get(`${baseUrl}/v1/notification`)
-            .query({limit: 10, page:3})
+            .query({limit: 10, page: 3})
             .set('Cookie', cookies)
             .set('Authorization', `Bearer ${token}`)
             .type('json')
@@ -107,6 +114,59 @@ describe('App Notification', function () {
                 expect(res.body.total).toEqual(53);
                 expect(res.body.data.length).toEqual(10);
                 expect(res.body.data[0].read).toEqual(true);
+                done();
+            });
+    });
+
+    it('should get unread notifications', function (done) {
+        superagent.get(`${baseUrl}/v1/notification?read=0`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.page).toEqual(1);
+                expect(res.body.limit).toEqual(100);
+                expect(res.body.total).toEqual(unreadCount);
+                expect(res.body.data.length).toEqual(unreadCount);
+                expect(res.body.data[0].read).toEqual(false);
+                done();
+            });
+    });
+
+    it('should mark notifications as read', function (done) {
+        superagent.put(`${baseUrl}/v1/notifications/markread`)
+            .send({
+                ids: _.take(notifications.filter(v => v.read === false).map(v => v._id), 5)
+            })
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.updated).toEqual(5);
+                expect(res.body.data.length).toEqual(5);
+                done(err);
+            });
+    });
+
+    it('should get unread notifications', function (done) {
+        superagent.get(`${baseUrl}/v1/notification?read=0`)
+            .set('Cookie', cookies)
+            .set('Authorization', `Bearer ${token}`)
+            .type('json')
+            .end((err, res) => {
+                const newCount = unreadCount - 5;
+
+                expect(res.status).toEqual(200);
+                expect(res.body.data).toBeAn('array');
+                expect(res.body.page).toEqual(1);
+                expect(res.body.limit).toEqual(100);
+                expect(res.body.total).toEqual(newCount);
+                expect(res.body.data.length).toEqual(newCount);
+                expect(res.body.data[0].read).toEqual(false);
                 done();
             });
     });

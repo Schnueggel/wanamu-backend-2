@@ -2,7 +2,6 @@
 import superagent from 'superagent';
 import expect from 'expect';
 import jwt from 'jwt-simple';
-import child_process from 'child_process';
 import { setupDb } from '../dist/v1/tools/setup';
 import config from '../dist/v1/config';
 

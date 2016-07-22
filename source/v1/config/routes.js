@@ -73,5 +73,7 @@ router.delete('/friend/:fid/:id', authCheck, checkUserIdMw, validObjectId(['id',
 router.delete('/friend/:fid', authCheck, checkUserIdMw, validObjectId(['id', 'fid']), friend.deleteFriend);
 
 router.get('/notification', authCheck, pagination, notification.getNotifications);
+router.put('/notifications/markread', authCheck, checkUserIdMw, notification.markAsRead);
+router.put('/notifications/:id/markread', authCheck, checkUserIdMw, notification.markAsRead);
 
 export default router;

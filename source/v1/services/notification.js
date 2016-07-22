@@ -68,7 +68,7 @@ export class NotificationService {
 
         await this.send(friend._id, note, Events.Friend_Accepted);
     }
-    
+
     /**
      *
      * @param {wu.model.User} user
@@ -87,31 +87,38 @@ export class NotificationService {
 
     /**
      *
-     * @param {string} userId
+     * @param {string} owner
      * @param {number} limit
      * @param {number} page
      * @param {string} sort
      * @returns Array<wu.model.Notification>
      */
-    async getNotifications(userId, limit = 100, page=1, sort = '-read') {
-
-        return await Notification.find({
-            owner: userId
-        }).sort(sort).limit(limit).skip((page-1)*limit).exec();
+    async getNotifications(owner, limit = 100, page = 1, sort = '-read') {
+        return this.getAllNotifications({owner}, limit, page, sort);
     }
 
     /**
      *
-     * @param {string} userId
+     * @param {object} where
+     * @param {number} limit
+     * @param {number} page
+     * @param {string} sort
+     * @returns Array<wu.model.Notification>
+     */
+    async getAllNotifications(where, limit = 100, page = 1, sort = '-read') {
+        return await Notification.find(where).sort(sort).limit(limit).skip((page - 1) * limit).exec();
+    }
+
+    /**
+     *
+     * @param {object} where
      * @param {number} limit
      * @param {number} page
      * @param {string} sort
      * @returns Promise<number>
      */
-    async countNotifications(userId) {
-        return await Notification.count({
-            owner: userId
-        }).exec();
+    async countNotifications(where) {
+        return await Notification.count(where).exec();
     }
 }
 
